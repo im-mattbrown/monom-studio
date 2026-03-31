@@ -1,65 +1,166 @@
-import Image from "next/image";
+function Chars({ text, className }) {
+  return text.split("").map((char, i) => (
+    <span key={i} className={className}>{char}</span>
+  ));
+}
+function CharsTwo({ text, className }) {
+  return text.split("").map((char, i) => (
+    <span key={i} className={className}>{char}</span>
+  ));
+}
+function CharsThree({ text, className }) {
+  return text.split("").map((char, i) => (
+    <span key={i} className={className}>{char}</span>
+  ));
+}
+
+import MonomTitle from './components/MonomTitle';
+import ServicesSection from './components/ServicesSection';
+import HumansSection from './components/HumansSection';
+import ProjectsSection from './components/ProjectsSection';
+import DeviceScrollSection from './components/DeviceScrollSection';
+import ThemeToggle from './components/ThemeToggle';
+import Footer from './components/Footer';
+
+const imgLogo        = "/images/logos/monomLogoWhite.svg";
+const imgArrowUpRight = "/images/arrowUpRight.svg";
+const imgArrowDown   = "/images/arrowDown.svg";
+const imgHero        = "/images/video_Section.jpg";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="bg-[var(--color-bg)] min-h-screen text-[var(--color-fg)] font-medium overflow-x-hidden">
+
+      {/* ── NAV ── */}
+      <nav className="flex items-center justify-between px-[30px] pt-[30px]">
+        <img src={imgLogo} alt="Monom Studio" className="h-[42px] w-auto theme-invert" />
+        <ThemeToggle />
+        <span className="text-[16px] font-normal tracking-wide">[ MENU ]</span>
+        <button className="flex items-center gap-1 border border-[var(--color-fg)] rounded-[10px] py-[7.5px] px-3 text-[16px] font-normal hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors">
+          START A PROJECT
+          <span className="inline-flex items-center justify-center p-[5px]">
+            <img src={imgArrowUpRight} alt="" className="w-[9.5px] h-[9.5px] theme-invert" />
+          </span>
+        </button>
+      </nav>
+
+      {/* ── HERO TEXT ── */}
+      <section className="relative px-[30px] mt-[70px]">
+        <p className="text-[23px] w-[355px] leading-normal whitespace-pre-wrap">
+          <Chars text={"                MONOM STUDIO: A "} />
+          <Chars text="MODERN" className="underline" />
+          <Chars text={" AGENCY     BUILT FOR EMERGING               COMPANIES DESIGNEDTO  HELP "} />
+          <Chars text="FOUNDERS" className="underline" />
+          <Chars text={" AND  SMALL "} />
+          <Chars text="BUSINESSES" className="underline" />
+        </p>
+        <img src="/images/shape1.svg" alt="" className="absolute bottom-[75px] left-[185px] theme-invert" />
+      </section>
+
+      <div className="flex items-center justify-between px-[30px] mt-8 mb-[300px]">
+        <p className="text-[var(--color-muted)] text-[17px]">BUILT WITH VIBES</p>
+      </div>
+
+      {/* ── LARGE MONOM TEXT ── */}
+      <div className="relative mt-8">
+        <div className="flex items-center justify-between px-[45px] mt-[60px] mb-[50px] relative z-10">
+          <p className="text-[var(--color-muted)] text-[23px]">[ SCROLL TO DISCOVER ]</p>
+          <div className="flex items-center gap-2 border-b border-[var(--color-fg)] pb-0.5">
+            <p className="text-[var(--color-fg)] text-[23px]">JUMP TO PROJECTS</p>
+            <img src={imgArrowDown} alt="" className="w-5 h-5 theme-invert" />
+          </div>
+        </div>
+        <MonomTitle />
+      </div>
+
+      {/* ── SELECTED WORKS HEADER ── */}
+      <div className="flex items-center justify-between px-[45px] mt-8">
+        <p className="text-[var(--color-muted)] text-[23px]">SELECTED WORKS</p>
+        <p className="text-[var(--color-muted)] text-[23px]">OUR MOST LOVED PROJECTS</p>
+      </div>
+
+      {/* ── VIDEO / IMAGE SECTION ── */}
+      <section className="mx-[30px] mt-4 h-auto overflow-hidden relative">
+        <video
+          src="https://res.cloudinary.com/dzghwkkzb/video/upload/v1774986218/monomVideoSection_1_nmb89n.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="relative inset-0 w-full h-full object-cover object-center"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+        <div
+          className="absolute inset-0 pointer-events-none z-10"
+          style={{
+            background: 'linear-gradient(to bottom, rgba(14,14,14,0.7) 0px, rgba(14,14,14,0) 0px, rgba(14,14,14,0) calc(100% - 80px), rgba(14,14,14,0.1) 100%)',
+          }}
+        />
+      </section>
+
+      {/* ── SERVICES SECTION ── */}
+      <ServicesSection />
+
+      {/* ── BUILT BY HUMANS SECTION ── */}
+      <HumansSection />
+
+      {/* ── PROJECTS SECTION ── */}
+      <ProjectsSection />
+
+      {/* ── RESPONSIVE BY DEFAULT ── */}
+      <section className="relative mt-[100px] px-[160px] pb-[100px]">
+        <p className="text-[var(--color-muted)] text-[23px]">[ RESPONSIVE BY DEFAULT ]</p>
+
+        {/* shape2 — absolutely positioned, adjust top/left/right/bottom to taste */}
+        <img
+          src="/images/shape2.svg"
+          alt=""
+          className="absolute theme-invert"
+          style={{ top: '78px', left: '386px', width: '60px', height: 'auto' }}
+        />
+
+        <h2
+          className="font-medium text-[var(--color-fg)] leading-tight whitespace-pre mt-8"
+          style={{ fontSize: 'clamp(32px, 4.5vw, 65px)' }}
+        >
+          {`EVERY      DEVICE`}
+          <br />
+          CONSIDERED WITH CARE
+        </h2>
+      </section>
+
+      <DeviceScrollSection />
+
+      {/* ── CONTACT SECTION ── */}
+      <section className="mt-[140px] px-[45px]">
+        <p className="text-[var(--color-muted)] text-[23px]">[ GET IN TOUCH ]</p>
+
+        <h2
+          className="font-medium text-[var(--color-fg)] leading-none mt-6"
+          style={{ fontSize: 'clamp(56px, 9.5vw, 136px)' }}
+        >
+          LET'S BUILD
+          <br />
+          SOMETHING
+          <br />
+          GREAT
+        </h2>
+
+        <div className="mt-14 flex items-center justify-between border-t border-[var(--color-card-border)] pt-8">
+          <p className="text-[var(--color-muted)] text-[23px] tracking-wide">
+            m@monomstud.io
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
           <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="mailto:m@monomstud.io"
+            className="flex items-center gap-2 border border-[var(--color-fg)] rounded-[10px] py-[10px] px-5 text-[16px] font-normal hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
+            START A PROJECT
+            <img src="/images/arrowUpRight.svg" alt="" className="w-[10px] h-[10px] theme-invert" />
           </a>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <Footer />
+
+    </main>
   );
 }

@@ -1,26 +1,135 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
+  /* ── Dark theme (default) ─────────────────────────────────────────── */
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-bg:          #0e0e0e;
+    --color-fg:          #d9d9d9;
+    --color-muted:       #575757;
+    --color-card:        #1a1a1a;
+    --color-card-border: #2a2a2a;
+    --color-inset:       #111111;
+  }
+
+  /* ── Light theme ──────────────────────────────────────────────────── */
+  html.light-theme {
+    --color-bg:          #d9d9d9;
+    --color-fg:          #0e0e0e;
+    --color-muted:       #575757;
+    --color-card:        #c8c8c8;
+    --color-card-border: #b5b5b5;
+    --color-inset:       #e5e5e5;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    cursor: none !important;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-inter), sans-serif;
+    font-weight: 500;
+    overflow-x: hidden;
+    transition: background-color 0.35s ease, color 0.35s ease;
+  }
+
+  /* White SVG assets (e.g. logo, shapes) — invert in light mode */
+  html.light-theme .theme-invert {
+    filter: invert(1);
+  }
+
+  /* Dark SVG assets (e.g. social icons) — invert in dark mode to make white */
+  .theme-icon {
+    filter: invert(1);
+  }
+  html.light-theme .theme-icon {
+    filter: invert(0);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ── Film grain overlay ──────────────────────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  animation: grain 8s steps(10) infinite;
+}
+
+/* ── Person glitch animations (4 variants) ───────────────────────────── */
+
+/* Variant 1 — horizontal translate jitter + hue spike */
+@keyframes person-glitch-1 {
+  0%   { opacity: 0;   transform: translateX(-16px) scale(0.88); filter: brightness(2.2) hue-rotate(25deg); }
+  4%   { opacity: 1;   transform: translateX(8px)   scale(1.04); filter: brightness(1); animation-timing-function: steps(1); }
+  6%   { opacity: 1;   transform: translateX(-4px)  scale(1);    filter: none; }
+  9%   { opacity: 1;   transform: translateX(0)     scale(1); }
+  74%  { opacity: 1;   transform: translateX(0)     scale(1); }
+  77%  { opacity: 1;   transform: translateX(12px)  scale(1);    filter: hue-rotate(-60deg); animation-timing-function: steps(1); }
+  80%  { opacity: 0.6; transform: translateX(-6px)  scale(1); }
+  85%  { opacity: 0;   transform: translateX(2px)   scale(0.95); filter: none; }
+  100% { opacity: 0; }
+}
+
+/* Variant 2 — skew warp + contrast flash */
+@keyframes person-glitch-2 {
+  0%   { opacity: 0;   transform: scale(1.12) skewX(12deg);  filter: contrast(3); }
+  5%   { opacity: 1;   transform: scale(0.97) skewX(-5deg);  filter: contrast(1.2); animation-timing-function: steps(1); }
+  8%   { opacity: 1;   transform: scale(1.01) skewX(2deg);   filter: none; }
+  11%  { opacity: 1;   transform: scale(1)    skewX(0); }
+  52%  { transform: scale(1); }
+  55%  { transform: scale(1) skewX(6deg) translateX(10px);   filter: brightness(1.5); animation-timing-function: steps(1); }
+  57%  { transform: scale(1) skewX(-2deg) translateX(0);     filter: none; }
+  80%  { opacity: 1; }
+  86%  { opacity: 0;   transform: scale(0.92) skewX(-4deg); }
+  100% { opacity: 0; }
+}
+
+/* Variant 3 — clip-path scanner with mid-stutter */
+@keyframes person-glitch-3 {
+  0%   { opacity: 1;   clip-path: inset(0 0 100% 0); filter: brightness(1.8); }
+  5%   { clip-path: inset(0 0 72% 0);  filter: brightness(1.3); animation-timing-function: steps(1); }
+  7%   { clip-path: inset(0 0 74% 0); }
+  9%   { clip-path: inset(0 0 70% 0);  filter: none; }
+  14%  { clip-path: inset(0 0 0% 0); }
+  68%  { opacity: 1;   clip-path: inset(0 0 0% 0); }
+  72%  { clip-path: inset(18% 0 8% 0);  opacity: 0.9; filter: hue-rotate(45deg); animation-timing-function: steps(1); }
+  76%  { clip-path: inset(0% 0 88% 0);  opacity: 0.7; filter: none; }
+  82%  { clip-path: inset(0 0 100% 0);  opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* Variant 4 — brightness flash + vertical bounce + saturate blow-out */
+@keyframes person-glitch-4 {
+  0%   { opacity: 0;   transform: translateY(12px)  scale(0.88); }
+  4%   { opacity: 1;   transform: translateY(-8px)  scale(1.05); filter: brightness(3) saturate(0); animation-timing-function: steps(1); }
+  7%   { opacity: 1;   transform: translateY(3px)   scale(1);    filter: brightness(1.1) saturate(1); }
+  10%  { opacity: 1;   transform: translateY(0)     scale(1);    filter: none; }
+  66%  { opacity: 1;   transform: scale(1); }
+  70%  { opacity: 1;   transform: translateY(-5px) scale(1.02);  filter: saturate(4) hue-rotate(90deg); animation-timing-function: steps(1); }
+  74%  { opacity: 0;   transform: translateY(8px)  scale(0.94);  filter: none; }
+  100% { opacity: 0; }
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10%       { transform: translate(-4%, -8%); }
+  20%       { transform: translate(-8%, 4%); }
+  30%       { transform: translate(6%, -10%); }
+  40%       { transform: translate(-4%, 10%); }
+  50%       { transform: translate(-10%, 6%); }
+  60%       { transform: translate(10%, 0%); }
+  70%       { transform: translate(0%, 8%); }
+  80%       { transform: translate(4%, 10%); }
+  90%       { transform: translate(-8%, 6%); }
 }
