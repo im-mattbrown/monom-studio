@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useLenis } from 'lenis/react'
 
 const SERVICES = [
@@ -42,6 +42,15 @@ export default function ServicesSection() {
   const targetX     = useRef(0)
   const rafRef      = useRef(null)
 
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
   // ── RAF lerp ──────────────────────────────────────────────────────────────
   function startHorizontalRAF() {
     const track = trackRef.current
@@ -57,7 +66,6 @@ export default function ServicesSection() {
     rafRef.current = requestAnimationFrame(tick)
   }
 
-  // ── Lock forward (scrolling DOWN into section, start from card 01) ────────
   function lockForward() {
     const section = sectionRef.current
     if (!section) return
@@ -70,7 +78,6 @@ export default function ServicesSection() {
     startHorizontalRAF()
   }
 
-  // ── Lock backward (scrolling UP into section, start from card 05) ─────────
   function lockBackward() {
     const section = sectionRef.current
     const track   = trackRef.current
@@ -85,7 +92,6 @@ export default function ServicesSection() {
     startHorizontalRAF()
   }
 
-  // ── Unlock forward (reached card 05, release downward) ────────────────────
   function unlockForward() {
     const track = trackRef.current
     if (!track) return
@@ -99,7 +105,6 @@ export default function ServicesSection() {
     lenisRef.current?.start()
   }
 
-  // ── Unlock backward (reached card 01, release upward) ────────────────────
   function unlockBack() {
     const track = trackRef.current
     if (!track) return
@@ -112,16 +117,17 @@ export default function ServicesSection() {
     lenisRef.current?.start()
   }
 
-  // ── Lenis scroll detection ─────────────────────────────────────────────────
+  // ── Lenis scroll detection (desktop only) ─────────────────────────────────
   useLenis((lenis) => {
     lenisRef.current = lenis
+    if (isMobile) return
+
     const section = sectionRef.current
     if (!section || lockedRef.current) return
 
     const sectionTop    = section.offsetTop
     const sectionBottom = sectionTop + section.offsetHeight
 
-    // Clear each cooldown the moment scroll exits the section zone
     if (cooldownFwd.current && (lenis.scroll >= sectionBottom || lenis.scroll < sectionTop)) {
       cooldownFwd.current = false
     }
@@ -129,7 +135,6 @@ export default function ServicesSection() {
       cooldownBck.current = false
     }
 
-    // Scrolling DOWN: lock when section fills the screen
     if (
       !cooldownFwd.current &&
       lenis.direction === 1 &&
@@ -140,7 +145,6 @@ export default function ServicesSection() {
       return
     }
 
-    // Scrolling UP: lock when section fills the screen (lenis.scroll ≈ sectionTop)
     if (
       !cooldownBck.current &&
       lenis.direction === -1 &&
@@ -152,27 +156,19 @@ export default function ServicesSection() {
     }
   })
 
-  // ── Wheel handler ──────────────────────────────────────────────────────────
+  // ── Wheel handler (desktop only) ───────────────────────────────────────────
   useEffect(() => {
+    if (isMobile) return
+
     const track = trackRef.current
     if (!track) return
 
     const handleWheel = (e) => {
       if (!lockedRef.current) return
-
       const maxX = track.scrollWidth - window.innerWidth
 
-      // At card 01 scrolling up → release backward
-      if (targetX.current <= 0 && e.deltaY < 0) {
-        unlockBack()
-        return
-      }
-
-      // At card 05 scrolling down → release forward
-      if (targetX.current >= maxX && e.deltaY > 0) {
-        unlockForward()
-        return
-      }
+      if (targetX.current <= 0 && e.deltaY < 0) { unlockBack();    return }
+      if (targetX.current >= maxX && e.deltaY > 0) { unlockForward(); return }
 
       e.preventDefault()
       targetX.current = Math.max(0, Math.min(maxX, targetX.current + e.deltaY * 1.5))
@@ -183,8 +179,42 @@ export default function ServicesSection() {
       window.removeEventListener('wheel', handleWheel)
       cancelAnimationFrame(rafRef.current)
     }
-  }, [])
+  }, [isMobile])
 
+  // ── Mobile layout: vertical stack ─────────────────────────────────────────
+  if (isMobile) {
+    return (
+      <section ref={sectionRef} className="px-[20px] pt-[60px] pb-[40px]">
+        <div className="flex justify-between mb-8">
+          <p className="text-[var(--color-fg)] text-[20px]">OUR SERVICES</p>
+          <p className="text-[var(--color-muted)] text-[20px]">WHAT WE OFFER</p>
+        </div>
+        <div className="flex flex-col gap-4">
+          {SERVICES.map((s) => (
+            <div
+              key={s.num}
+              className="flex flex-col justify-between border border-[var(--color-fg)]/20 rounded-[10px] p-[24px] gap-8"
+            >
+              <span className="text-[var(--color-muted)] text-[14px]">[ {s.num} ]</span>
+              <div>
+                <p
+                  className="text-[var(--color-fg)] font-medium leading-none"
+                  style={{ fontSize: 'clamp(36px, 9vw, 56px)' }}
+                >
+                  {s.title}
+                </p>
+                <p className="text-[var(--color-muted)] text-[16px] leading-[26px] mt-4">
+                  {s.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  // ── Desktop layout: horizontal scroll ─────────────────────────────────────
   return (
     <section ref={sectionRef} className="relative h-screen overflow-hidden">
       <div className='flex w-full justify-between'>
