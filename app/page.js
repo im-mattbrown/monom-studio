@@ -73,10 +73,10 @@ export default function Home() {
       <div className="relative mt-8">
         <div className="flex items-center justify-between px-[45px] mt-[60px] mb-[50px] relative z-10">
           <p className="text-[var(--color-muted)] text-[23px]">[ SCROLL TO DISCOVER ]</p>
-          <div className="hidden md:flex items-center gap-2 border-b border-[var(--color-fg)] pb-0.5">
+          <a href="#projects" className="hidden md:flex items-center gap-2 border-b border-[var(--color-fg)] pb-0.5 hover:opacity-60 transition-opacity">
             <p className="text-[var(--color-fg)] text-[23px]">JUMP TO PROJECTS</p>
             <img src={imgArrowDown} alt="" className="w-5 h-5 theme-invert" />
-          </div>
+          </a>
         </div>
         <MonomTitle />
       </div>

@@ -294,7 +294,7 @@ export default function ProjectsSection() {
   if (isMobile) {
     return (
       <>
-        <section ref={sectionRef} className="relative mt-[100px]">
+        <section ref={sectionRef} id="projects" className="relative mt-[100px]">
 
           {/* Title — sticky so cards scroll over it */}
           <div className="sticky top-0 z-0 h-[55vh] flex flex-col items-center justify-center pointer-events-none select-none">
@@ -352,6 +352,7 @@ export default function ProjectsSection() {
     <>
       <section
         ref={sectionRef}
+        id="projects"
         className="relative h-screen overflow-hidden mt-[100px]"
       >
         {/* Section header */}
