@@ -66,6 +66,22 @@ body::after {
   animation: grain 8s steps(10) infinite;
 }
 
+/* ── MONOM title — smaller on mobile ────────────────────────────────── */
+@media (max-width: 767px) {
+  .monom-title {
+    font-size: clamp(40px, 20vw, 340px) !important;
+  }
+}
+
+/* ── Mobile menu slide-in ────────────────────────────────────────────── */
+@keyframes menu-in {
+  0%   { opacity: 0; transform: translateY(-12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-menu-in {
+  animation: menu-in 0.22s ease forwards;
+}
+
 /* ── Person glitch animations (4 variants) ───────────────────────────── */
 
 /* Variant 1 — horizontal translate jitter + hue spike */

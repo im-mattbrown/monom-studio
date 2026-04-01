@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 
 const TOTAL_SCREENS  = 12
 const BASE_SPEED     = 0.4
@@ -9,6 +9,14 @@ const LERP_FACTOR    = 0.06
 const SCROLL_TIMEOUT = 180
 
 export default function DeviceScrollSection() {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+
   const sectionRef   = useRef(null)
   const trackRef     = useRef(null)
   const posRef       = useRef(0)
@@ -66,8 +74,9 @@ export default function DeviceScrollSection() {
     }
   }, [])
 
-  const screenW = 'calc((100vw - 80px) / 6)'
-  const screenH = 'calc((100vw - 80px) / 6 * (19 / 9))'
+  // Mobile: 3 screens across — Desktop: 6 screens across
+  const sw = isMobile ? 'calc((100vw - 40px) / 3)' : 'calc((100vw - 80px) / 6)'
+  const sh = isMobile ? 'calc((100vw - 40px) / 3 * (19 / 9))' : 'calc((100vw - 80px) / 6 * (19 / 9))'
 
   // Render two identical copies — the loop reset makes it appear infinite
   const screens = Array.from({ length: TOTAL_SCREENS * 2 }).map((_, i) => {
@@ -76,7 +85,7 @@ export default function DeviceScrollSection() {
       <div
         key={i}
         className="relative flex-shrink-0 bg-[var(--color-card)] border border-[var(--color-card-border)] flex flex-col overflow-hidden"
-        style={{ width: screenW, height: screenH, borderRadius: '22px' }}
+        style={{ width: sw, height: sh, borderRadius: '22px' }}
       >
         {/* Status-bar notch */}
         <div className="flex items-center justify-center pt-3 pb-2 flex-shrink-0">

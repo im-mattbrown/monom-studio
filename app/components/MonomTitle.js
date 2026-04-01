@@ -18,7 +18,7 @@ export default function MonomTitle() {
   return (
     <p
       ref={ref}
-      className="text-[var(--color-fg)] font-medium whitespace-nowrap text-center leading-none"
+      className="monom-title text-[var(--color-fg)] font-medium whitespace-nowrap text-center leading-none"
       style={{
         fontSize: 'clamp(80px, 23.6vw, 340px)',
         lineHeight: '1',

@@ -25,7 +25,15 @@ function CharsTwo({ text, className }) {
 const LIFETIME = 720
 const INTERVAL = 220
 
-function PeopleCloud() {
+// imgW / imgH define a fixed box — object-cover crops consistently across all photos.
+// maxTop / maxLeft are percentages that keep the fixed-size box inside the container.
+function PeopleCloud({
+  imgW   = 200,
+  imgH   = 260,
+  maxTop = 60,
+  maxLeft = 65,
+  minH   = '500px',
+}) {
   const [items, setItems] = useState([])
   const mountedRef = useRef(true)
   const queueRef   = useRef([])
@@ -42,12 +50,12 @@ function PeopleCloud() {
         queueRef.current = shuffle(PERSON_IMAGES)
       }
 
-      const src     = queueRef.current.shift()
-      const top     = 5  + Math.random() * 62
-      const left    = 5  + Math.random() * 68
-      const variant = Math.ceil(Math.random() * 4)                    // 1–4
-      const rotation = (Math.random() * 12 - 6).toFixed(1)           // –6° to +6°
-      const uid     = ++uidRef.current
+      const src      = queueRef.current.shift()
+      const top      = 2  + Math.random() * maxTop
+      const left     = 2  + Math.random() * maxLeft
+      const variant  = Math.ceil(Math.random() * 4)
+      const rotation = (Math.random() * 12 - 6).toFixed(1)
+      const uid      = ++uidRef.current
 
       setItems(prev => [...prev, { src, top, left, variant, rotation, uid }])
 
@@ -65,24 +73,25 @@ function PeopleCloud() {
   }, [])
 
   return (
-    <div className="relative w-full h-full min-h-[500px]">
+    <div className="relative w-full h-full" style={{ minHeight: minH }}>
       {items.map(item => (
-        // Outer div: position + base rotation (independent of animation transform)
         <div
           key={item.uid}
-          className="absolute pointer-events-none select-none"
+          className="absolute pointer-events-none select-none overflow-hidden"
           style={{
-            top:      `${item.top}%`,
-            left:     `${item.left}%`,
+            top:       `${item.top}%`,
+            left:      `${item.left}%`,
+            width:     `${imgW}px`,
+            height:    `${imgH}px`,
             transform: `rotate(${item.rotation}deg)`,
+            animation: `person-glitch-${item.variant} ${LIFETIME / 1000}s ease forwards`,
           }}
         >
           <img
             src={item.src}
             alt=""
             draggable={false}
-            className="w-[200px] h-auto object-contain"
-            style={{ animation: `person-glitch-${item.variant} ${LIFETIME / 1000}s ease forwards` }}
+            className="w-full h-full object-cover object-top"
           />
         </div>
       ))}
@@ -92,7 +101,8 @@ function PeopleCloud() {
 
 export default function HumansSection() {
   return (
-    <section className="mt-[100px] px-[30px] flex gap-8">
+    <>
+    <section className="mt-[100px] px-[30px] flex flex-col md:flex-row gap-8">
 
       {/* ── LEFT: text ── */}
       <div className="shrink-0">
@@ -105,10 +115,10 @@ export default function HumansSection() {
           FOR HUMANS
         </h2>
 
-        <p className="text-[var(--color-muted)] text-[23px] mt-8">[ AUTHENTIC INTELLIGENCE ]</p>
+        <p className="text-[var(--color-muted)] text-[18px] md:text-[23px] mt-8">[ AUTHENTIC INTELLIGENCE ]</p>
 
         <div className="mt-8">
-          <p className="text-[23px] w-[404px] leading-normal whitespace-pre-wrap">
+          <p className="text-[15px] md:text-[23px] w-full md:w-[404px] leading-normal whitespace-pre-wrap">
             <CharsTwo text="OUR ETHOS ARE SIMPLE: WE BUILD " />
             <CharsTwo text="WEB   EXPERIENCES  WITH  PEOPLE" />
             <CharsTwo text=" AT  THE CORE OF EVERYTHING  WE " />
@@ -118,7 +128,7 @@ export default function HumansSection() {
           </p>
         </div>
 
-        <p className="text-[23px] mt-12 w-[404px] text-[var(--color-muted)] leading-normal whitespace-pre-wrap">
+        <p className="text-[15px] md:text-[23px] mt-8 md:mt-12 w-full md:w-[404px] text-[var(--color-muted)] leading-normal whitespace-pre-wrap">
           <CharsTwo text="OUR     DESIGN     DECISIONS      ARE " />
           <CharsTwo text="INFORMED  BY DATA   AND BACKED " />
           <CharsTwo text="BY   USER RESEARCH,   FOLLOWING " />
@@ -130,11 +140,17 @@ export default function HumansSection() {
         </p>
       </div>
 
-      {/* ── RIGHT: random person spawn cloud ── */}
-      <div className="flex-1 relative overflow-hidden">
-        <PeopleCloud />
+      {/* ── RIGHT: random person spawn cloud — desktop only ── */}
+      <div className="hidden md:block flex-1 relative overflow-hidden">
+        <PeopleCloud imgW={200} imgH={260} maxTop={55} maxLeft={62} minH="500px" />
       </div>
 
     </section>
+
+    {/* ── Mobile people cloud — shown between Humans and Projects ── */}
+    <div className="md:hidden relative h-[280px] overflow-hidden mt-8">
+      <PeopleCloud imgW={80} imgH={110} maxTop={50} maxLeft={72} minH="280px" />
+    </div>
+    </>
   )
 }

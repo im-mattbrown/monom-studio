@@ -64,6 +64,7 @@ function ProjectModal({ project, onClose }) {
     <div
       className="fixed inset-0 z-[999] flex items-center justify-center bg-black/70 backdrop-blur-sm px-[20px]"
       onClick={handleBackdrop}
+      onWheel={e => e.stopPropagation()}
     >
       <div className="relative w-full max-w-[760px] max-h-[90vh] overflow-y-auto bg-[var(--color-card)] border border-[var(--color-card-border)] rounded-[16px] p-[48px]">
 

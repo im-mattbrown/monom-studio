@@ -123,7 +123,7 @@ export default function Footer() {
       <footer className="mt-[120px] border-t border-[var(--color-card-border)]">
 
         {/* ── Main grid ───────────────────────────────────────────────── */}
-        <div className="grid grid-cols-[1fr_1fr_1fr_1fr] gap-x-8 px-[45px] pt-[60px] pb-[60px]">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_1fr] gap-y-10 md:gap-y-0 gap-x-8 px-[30px] md:px-[45px] pt-[60px] pb-[60px]">
 
           {/* Col 1 — Logo + socials */}
           <div className="flex flex-col justify-between">
@@ -155,50 +155,56 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Col 3 — Studio links */}
-          <div>
-            <p className="text-[var(--color-muted)] text-[14px] mb-6 tracking-widest">
-              [ STUDIO ]
-            </p>
-            <ul className="flex flex-col gap-3">
-              {STUDIO_LINKS.map(l => (
-                <li key={l}>
-                  <a href="#" className="text-[var(--color-fg)] text-[16px] hover:text-[var(--color-muted)] transition-colors">
-                    {l}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Col 3 + 4 — Studio & Services: side by side on mobile, separate grid cols on desktop */}
+          <div className="flex justify-between md:contents gap-8">
 
-          {/* Col 4 — Services links */}
-          <div>
-            <p className="text-[var(--color-muted)] text-[14px] mb-6 tracking-widest">
-              [ SERVICES ]
-            </p>
-            <ul className="flex flex-col gap-3">
-              {SERVICES.map(service => (
-                <li key={service.num}>
-                  <a
-                    href="#"
-                    className="text-[var(--color-fg)] text-[16px] transition-colors"
-                    style={{ opacity: active && active.num !== service.num ? 0.35 : 1 }}
-                    onMouseEnter={() => setActive(service)}
-                    onMouseLeave={() => setActive(null)}
-                  >
-                    {service.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            {/* Col 3 — Studio links */}
+            <div>
+              <p className="text-[var(--color-muted)] text-[14px] mb-6 tracking-widest">
+                [ STUDIO ]
+              </p>
+              <ul className="flex flex-col gap-3">
+                {STUDIO_LINKS.map(l => (
+                  <li key={l}>
+                    <a href="#" className="text-[var(--color-fg)] text-[16px] hover:text-[var(--color-muted)] transition-colors">
+                      {l}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Col 4 — Services links */}
+            <div>
+              <p className="text-[var(--color-muted)] text-[14px] mb-6 tracking-widest">
+                [ SERVICES ]
+              </p>
+              <ul className="flex flex-col gap-3">
+                {SERVICES.map(service => (
+                  <li key={service.num}>
+                    <a
+                      href="#"
+                      className="text-[var(--color-fg)] text-[16px] transition-colors"
+                      style={{ opacity: active && active.num !== service.num ? 0.35 : 1 }}
+                      onMouseEnter={() => setActive(service)}
+                      onMouseLeave={() => setActive(null)}
+                    >
+                      {service.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
           </div>
 
         </div>
 
         {/* ── Bottom bar ──────────────────────────────────────────────── */}
-        <div className="border-t border-[var(--color-card-border)] px-[45px] py-[24px] flex items-center justify-between">
+        <div className="border-t border-[var(--color-card-border)] px-[30px] md:px-[45px] py-[24px] flex items-center justify-between">
           <p className="text-[var(--color-muted)] text-[16px]">© 2026 MONOM STUDIO</p>
-          <p className="text-[var(--color-muted)] text-[16px]">THE HUMAN AGENCY</p>
+          <span className="text-[var(--color-muted)] text-[16px] md:hidden">||</span>
+          <p className="text-[var(--color-muted)] text-[16px] pl-[30px] md:pl-0">THE HUMAN AGENCY</p>
         </div>
 
       </footer>

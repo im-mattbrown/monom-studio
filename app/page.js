@@ -20,6 +20,7 @@ import HumansSection from './components/HumansSection';
 import ProjectsSection from './components/ProjectsSection';
 import DeviceScrollSection from './components/DeviceScrollSection';
 import ThemeToggle from './components/ThemeToggle';
+import MobileMenu from './components/MobileMenu';
 import Footer from './components/Footer';
 
 const imgLogo        = "/images/logos/monomLogoWhite.svg";
@@ -34,14 +35,21 @@ export default function Home() {
       {/* ── NAV ── */}
       <nav className="flex items-center justify-between px-[30px] pt-[30px]">
         <img src={imgLogo} alt="Monom Studio" className="h-[42px] w-auto theme-invert" />
-        <ThemeToggle />
-        <span className="text-[16px] font-normal tracking-wide">[ MENU ]</span>
-        <button className="flex items-center gap-1 border border-[var(--color-fg)] rounded-[10px] py-[7.5px] px-3 text-[16px] font-normal hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors">
+
+        {/* Desktop items — hidden on mobile */}
+        <span className="hidden md:block"><ThemeToggle /></span>
+        <span className="hidden md:block text-[16px] font-normal tracking-wide">[ MENU ]</span>
+        <button className="hidden md:flex items-center gap-1 border border-[var(--color-fg)] rounded-[10px] py-[7.5px] px-3 text-[16px] font-normal hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors">
           START A PROJECT
           <span className="inline-flex items-center justify-center p-[5px]">
             <img src={imgArrowUpRight} alt="" className="w-[9.5px] h-[9.5px] theme-invert" />
           </span>
         </button>
+
+        {/* Mobile menu — hidden on desktop */}
+        <div className="md:hidden">
+          <MobileMenu />
+        </div>
       </nav>
 
       {/* ── HERO TEXT ── */}
@@ -65,7 +73,7 @@ export default function Home() {
       <div className="relative mt-8">
         <div className="flex items-center justify-between px-[45px] mt-[60px] mb-[50px] relative z-10">
           <p className="text-[var(--color-muted)] text-[23px]">[ SCROLL TO DISCOVER ]</p>
-          <div className="flex items-center gap-2 border-b border-[var(--color-fg)] pb-0.5">
+          <div className="hidden md:flex items-center gap-2 border-b border-[var(--color-fg)] pb-0.5">
             <p className="text-[var(--color-fg)] text-[23px]">JUMP TO PROJECTS</p>
             <img src={imgArrowDown} alt="" className="w-5 h-5 theme-invert" />
           </div>
@@ -107,14 +115,20 @@ export default function Home() {
       <ProjectsSection />
 
       {/* ── RESPONSIVE BY DEFAULT ── */}
-      <section className="relative mt-[100px] px-[160px] pb-[100px]">
+      <section className="relative mt-[100px] px-[30px] md:px-[160px] pb-[100px]">
         <p className="text-[var(--color-muted)] text-[23px]">[ RESPONSIVE BY DEFAULT ]</p>
 
         {/* shape2 — absolutely positioned, adjust top/left/right/bottom to taste */}
         <img
           src="/images/shape2.svg"
           alt=""
-          className="absolute theme-invert"
+          className="absolute theme-invert md:hidden"
+          style={{ top: '70px', left: '140px', width: '30px', height: 'auto' }}
+        />
+        <img
+          src="/images/shape2.svg"
+          alt=""
+          className="absolute theme-invert hidden md:block"
           style={{ top: '78px', left: '386px', width: '60px', height: 'auto' }}
         />
 
@@ -145,13 +159,13 @@ export default function Home() {
           GREAT
         </h2>
 
-        <div className="mt-14 flex items-center justify-between border-t border-[var(--color-card-border)] pt-8">
+        <div className="mt-14 flex flex-col md:flex-row md:items-center justify-between border-t border-[var(--color-card-border)] pt-8 gap-6 md:gap-0">
           <p className="text-[var(--color-muted)] text-[23px] tracking-wide">
             m@monomstud.io
           </p>
           <a
             href="mailto:m@monomstud.io"
-            className="flex items-center gap-2 border border-[var(--color-fg)] rounded-[10px] py-[10px] px-5 text-[16px] font-normal hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors"
+            className="self-start flex items-center gap-2 border border-[var(--color-fg)] rounded-[10px] py-[10px] px-5 text-[16px] font-normal hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors"
           >
             START A PROJECT
             <img src="/images/arrowUpRight.svg" alt="" className="w-[10px] h-[10px] theme-invert" />
