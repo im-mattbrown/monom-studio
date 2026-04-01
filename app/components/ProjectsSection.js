@@ -7,29 +7,35 @@ const PROJECTS = [
   {
     num: '01',
     title: "THAT'S ON ME",
-    subtitle: 'PERSONAL ACCOUNTABILITY, REDESIGNED',
+    subtitle: 'AI POWERED VIRTUAL TRY-ON APP',
+    url: "https://www.thatson.me/",
+    logo: '/images/logos/tom.png',
     problem:
-      'MOST PEOPLE KNOW WHAT THEY WANT TO CHANGE — THEY JUST HAVE NO SYSTEM TO HOLD THEMSELVES TO IT. GENERIC HABIT TRACKERS FEEL LIKE CHORES, AND THE SHAME SPIRAL OF MISSING A STREAK KILLS MOTIVATION BEFORE IT STARTS.',
+      "Shopping for clothes online leaves out one of the main steps when shopping in person. A buyer has no idea how an item of clothing will look on themselves before they buy, leading to carts being left empty when a buyer can't see themselves in it.",
     solution:
-      'A LIGHTWEIGHT ACCOUNTABILITY APP BUILT AROUND HONESTY, NOT STREAKS. USERS SET THEIR OWN STANDARDS, CHECK IN DAILY, AND OWN THEIR OUTCOMES — NO GAMIFICATION, NO GUILT. JUST CLARITY ON WHERE YOU ACTUALLY STAND.',
+      "A virtual try-on application that leverages the power of Google's latest image generation model Nano-Banana. Users of That's on Me can upload a photo of themselves and the clothing they want to buy to see a new image of them with the clothing on.",
   },
   {
     num: '02',
     title: 'SHRTCTS',
-    subtitle: 'YOUR KEYBOARD, FINALLY MASTERED',
+    subtitle: 'POWER TO THE USER',
+    url: "https://www.shrtcts.io/",
+    logo: '/images/logos/shrtctsLogoMs.svg',
     problem:
-      'POWER USERS LOSE HOURS EVERY WEEK SWITCHING BETWEEN MOUSE AND KEYBOARD. SHORTCUT REFERENCES ARE SCATTERED ACROSS DOCUMENTATION, BURIED IN MENUS, AND IMPOSSIBLE TO MEMORISE WITHOUT CONSTANT REPETITION.',
+      "Many modern software applications have keybindings that allow a user to increase their productivity and output. The issue is that many of these app shortcuts are hard to learn or often too boring to even start to master.",
     solution:
-      'A COMPANION APP THAT SURFACES THE RIGHT SHORTCUTS FOR THE RIGHT APP AT THE RIGHT TIME. SHRTCTS LEARNS YOUR WORKFLOW AND NUDGES YOU TOWARD FASTER PATHS — TURNING MUSCLE MEMORY INTO A FEATURE, NOT AN AFTERTHOUGHT.',
+      "With shrtcts.io, users of Figma, Miro and VSCode can learn keybinding shortcuts through fun games and spaced repition where they progress through levels to become power users and speed up their workflows.",
   },
   {
     num: '03',
     title: 'CURL',
-    subtitle: 'HAIR CARE THAT ACTUALLY GETS IT',
+    subtitle: 'SURF THE WEB AGAIN',
+    url: "https://www.curl.fyi/",
+    logo: '/images/logos/curlLogo.png',
     problem:
-      'THE CURLY HAIR COMMUNITY IS UNDERSERVED BY MAINSTREAM BEAUTY APPS. PRODUCT RECOMMENDATIONS ARE GENERIC, ROUTINES ARE COPIED FROM STRAIGHT-HAIR ADVICE, AND THERE IS NO SINGLE PLACE TO TRACK WHAT ACTUALLY WORKS FOR YOUR SPECIFIC CURL PATTERN.',
+      "The web is a stale, boring shell of what it once was. Between scrolling social media and using AI tools, not much time is left for using the web as it was meant to be. We no longer discover new things, get inspired or have life changing experiences on the web unless its driven by social media.",
     solution:
-      'A PERSONALISED HAIR CARE PLATFORM BUILT EXCLUSIVELY FOR CURLS, COILS, AND WAVES. CURL MAPS YOUR HAIR PROFILE, TRACKS PRODUCTS AND ROUTINES, AND SURFACES COMMUNITY-BACKED ADVICE FILTERED TO YOUR EXACT PATTERN — SO EVERY WASH DAY IS INFORMED, NOT GUESSWORK.',
+      "Curl allows users to surf the web like we did in the early 2000s. Discovering new and interesting websites is one click of a button away on Curl where you can explore over 2000+ websites curated to your preferences across a wide range of topics and domains.",
   },
 ]
 
@@ -86,7 +92,23 @@ function ProjectModal({ project, onClose }) {
           {project.subtitle}
         </p>
 
-        <div className="mt-10 border-t border-[var(--color-card-border)]" />
+        {/* URL */}
+        {project.url && (
+          <a
+            href={project.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 mt-5 text-[#4A8FE8] text-[16px] hover:text-[#6AAAF5] transition-colors group"
+            onClick={e => e.stopPropagation()}
+          >
+            {project.url.replace(/^https?:\/\//, '')}
+            <span className="inline-flex items-center justify-center border border-[#4A8FE8] group-hover:border-[#6AAAF5] rounded-[6px] p-[4px] transition-colors">
+              <img src="/images/arrowUpRight.svg" alt="" className="w-[9px] h-[9px]" style={{ filter: 'invert(51%) sepia(60%) saturate(500%) hue-rotate(190deg) brightness(100%)' }} />
+            </span>
+          </a>
+        )}
+
+        <div className="mt-8 border-t border-[var(--color-card-border)]" />
 
         {/* Problem */}
         <div className="mt-8">
@@ -131,6 +153,14 @@ export default function ProjectsSection() {
   const targetScroll  = useRef(0)
   const rafRef        = useRef(null)
   const cardRefs      = useRef([])
+
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   const [activeProject, setActiveProject] = useState(null)
   // Mirror into a ref so the wheel handler can read it without being a dep
@@ -211,6 +241,7 @@ export default function ProjectsSection() {
 
   useLenis((lenis) => {
     lenisRef.current = lenis
+    if (isMobile) return
     const section = sectionRef.current
     if (!section || lockedRef.current) return
 
@@ -242,7 +273,7 @@ export default function ProjectsSection() {
   useEffect(() => {
     const handleWheel = (e) => {
       if (activeProjectRef.current) return   // modal open — don't intercept
-      if (!lockedRef.current) return
+      if (isMobile || !lockedRef.current) return
 
       if (targetScroll.current <= 0 && e.deltaY < 0)             { unlockBack();    return }
       if (targetScroll.current >= TOTAL_SCROLL && e.deltaY > 0)  { unlockForward(); return }
@@ -258,6 +289,64 @@ export default function ProjectsSection() {
   // Cancel RAF only on unmount
   useEffect(() => () => cancelAnimationFrame(rafRef.current), [])
 
+  // ── Mobile layout: vertical stack, cards scroll over sticky title ──────────
+  if (isMobile) {
+    return (
+      <>
+        <section ref={sectionRef} className="relative mt-[100px]">
+
+          {/* Title — sticky so cards scroll over it */}
+          <div className="sticky top-0 z-0 h-[55vh] flex flex-col items-center justify-center pointer-events-none select-none">
+            <p className="text-[var(--color-muted)] text-[18px]">[ SOME OF OUR WORK ]</p>
+            <p
+              className="font-medium text-[var(--color-fg)] leading-none mt-3 text-center"
+              style={{ fontSize: 'clamp(52px, 15vw, 90px)' }}
+            >
+              PROJECTS
+            </p>
+          </div>
+
+          {/* Cards — z-10 so they cover the sticky title as they scroll up */}
+          <div className="relative z-10 flex flex-col gap-4 px-[20px] pb-[60px]">
+            {PROJECTS.map((project) => (
+              <button
+                key={project.num}
+                onClick={() => setActiveProject(project)}
+                className="w-full flex flex-col justify-between bg-[var(--color-card)] border border-[var(--color-card-border)] rounded-[10px] p-[24px] text-left"
+                style={{ minHeight: '260px' }}
+              >
+                <span className="text-[var(--color-muted)] text-[14px]">[ {project.num} ]</span>
+
+                {project.logo && (
+                  <div className="flex items-center justify-center flex-1 py-4">
+                    <img
+                      src={project.logo}
+                      alt={project.title}
+                      className="max-h-[80px] w-auto object-contain"
+                    />
+                  </div>
+                )}
+
+                <p
+                  className="text-[var(--color-fg)] font-medium leading-none"
+                  style={{ fontSize: 'clamp(24px, 7vw, 40px)' }}
+                >
+                  {project.title}
+                </p>
+              </button>
+            ))}
+          </div>
+
+        </section>
+
+        {activeProject && (
+          <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />
+        )}
+      </>
+    )
+  }
+
+  // ── Desktop layout ─────────────────────────────────────────────────────────
   return (
     <>
       <section
@@ -296,6 +385,17 @@ export default function ProjectsSection() {
             >
               {/* Number — top left */}
               <span className="text-[var(--color-muted)] text-[16px] text-left">[ {project.num} ]</span>
+
+              {/* Logo — centre */}
+              {project.logo && (
+                <div className="flex items-center justify-center flex-1">
+                  <img
+                    src={project.logo}
+                    alt={project.title}
+                    className="max-w-[45%] max-h-[45%] w-auto h-auto object-contain"
+                  />
+                </div>
+              )}
 
               {/* Title — bottom left */}
               <p
