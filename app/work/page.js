@@ -7,14 +7,16 @@ import StartProjectButton from '../components/StartProjectButton'
 import StartProjectModal from '../components/StartProjectModal'
 import Footer from '../components/Footer'
 
-// ── PROJECTS — edit these to change titles, videos, and copy ─────────────────
-// Each entry: { num, title, videoSrc, description }
+// ── PROJECTS — edit these to change titles, videos, urls, and copy ───────────
+// Each entry: { num, title, videoSrc, url, description }
 // videoSrc can be left as '' if a project doesn't have a video yet.
+// url is used by the "VISIT SITE" button on mobile. Empty = button hidden.
 const PROJECTS = [
   {
     num: '01',
     title: 'DEVIL BOYS BARBERSHOP',
     videoSrc: 'https://matte-cdn.b-cdn.net/DBScreenLow.mp4',
+    url: 'https://www.devilboysbarber.shop/',
     description:
       'PLACEHOLDER COPY FOR DEVIL BOYS BARBERSHOP. REPLACE THIS WITH THE REAL DESCRIPTION OF THE PROJECT.',
   },
@@ -22,6 +24,7 @@ const PROJECTS = [
     num: '02',
     title: 'RB BOARDS',
     videoSrc: '',
+    url: '',
     description:
       'PLACEHOLDER COPY FOR RB BOARDS. REPLACE THIS WITH THE REAL DESCRIPTION OF THE PROJECT.',
   },
@@ -29,6 +32,7 @@ const PROJECTS = [
     num: '03',
     title: "THAT'S ON ME",
     videoSrc: '',
+    url: 'https://www.thatson.me/',
     description:
       "PLACEHOLDER COPY FOR THAT'S ON ME. REPLACE THIS WITH THE REAL DESCRIPTION OF THE PROJECT.",
   },
@@ -36,6 +40,7 @@ const PROJECTS = [
     num: '04',
     title: 'SHRTCTS.IO',
     videoSrc: '',
+    url: 'https://www.shrtcts.io/',
     description:
       'PLACEHOLDER COPY FOR SHRTCTS.IO. REPLACE THIS WITH THE REAL DESCRIPTION OF THE PROJECT.',
   },
@@ -156,9 +161,70 @@ function ProjectRow({ project, isActive, isAnyActive, onEnter }) {
   )
 }
 
+// ── Mobile row — all content expanded by default, no hover ───────────────────
+function MobileProjectRow({ project }) {
+  return (
+    <div className="border-t border-[var(--color-fg)]/15 last:border-b last:border-[var(--color-fg)]/15 px-[20px] py-8">
+
+      {/* Number + title */}
+      <div className="flex items-baseline gap-3 mb-6">
+        <span className="text-[var(--color-muted)] text-[12px] tracking-widest shrink-0">
+          [ {project.num} ]
+        </span>
+        <span
+          className="text-[var(--color-fg)] font-medium leading-none"
+          style={{ fontSize: 'clamp(28px, 7vw, 44px)' }}
+        >
+          {project.title}
+        </span>
+      </div>
+
+      {/* Row 1 — description (on top) */}
+      <p className="text-[var(--color-muted)] text-[15px] leading-[24px] mb-5">
+        {project.description}
+      </p>
+
+      {/* Row 2 — video (just below the description) */}
+      {project.videoSrc && (
+        <video
+          src={project.videoSrc}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          className="w-full block rounded-[10px] mb-5"
+          style={{ aspectRatio: '16 / 9', objectFit: 'cover' }}
+        />
+      )}
+
+      {/* Row 3 — visit site button */}
+      {project.url && (
+        <a
+          href={project.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 border border-[var(--color-fg)] rounded-[10px] py-[9px] px-4 text-[14px] font-normal hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors"
+        >
+          VISIT SITE
+          <img src="/images/arrowUpRight.svg" alt="" className="w-[10px] h-[10px] theme-invert" />
+        </a>
+      )}
+    </div>
+  )
+}
+
 // ── Page ─────────────────────────────────────────────────────────────────────
 export default function WorkPage() {
   const [activeIdx, setActiveIdx] = useState(null)
+  const [isMobile,  setIsMobile]  = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   return (
     <main className="bg-[var(--color-bg)] min-h-screen text-[var(--color-fg)] font-medium overflow-x-hidden">
@@ -188,21 +254,28 @@ export default function WorkPage() {
         </p>
       </section>
 
-      {/* ── Project list ──
-          onMouseLeave on the wrapping section clears active state so we never
-          flicker between row swaps (avoids the brief null state that would
-          happen if rows handled their own onLeave). */}
-      <section onMouseLeave={() => setActiveIdx(null)}>
-        {PROJECTS.map((project, i) => (
-          <ProjectRow
-            key={project.num}
-            project={project}
-            isActive={activeIdx === i}
-            isAnyActive={activeIdx !== null}
-            onEnter={() => setActiveIdx(i)}
-          />
-        ))}
-      </section>
+      {/* ── Project list ── */}
+      {isMobile ? (
+        <section>
+          {PROJECTS.map(project => (
+            <MobileProjectRow key={project.num} project={project} />
+          ))}
+        </section>
+      ) : (
+        // Desktop: hover-based rows. onMouseLeave on the wrapping section
+        // clears active state so we never flicker between row swaps.
+        <section onMouseLeave={() => setActiveIdx(null)}>
+          {PROJECTS.map((project, i) => (
+            <ProjectRow
+              key={project.num}
+              project={project}
+              isActive={activeIdx === i}
+              isAnyActive={activeIdx !== null}
+              onEnter={() => setActiveIdx(i)}
+            />
+          ))}
+        </section>
+      )}
 
       <Footer />
       <StartProjectModal />

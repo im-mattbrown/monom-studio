@@ -3,11 +3,11 @@
 import { useState, useRef, useEffect } from 'react'
 
 const STUDIO_LINKS = [
-  'ABOUT',
-  'WORK',
-  'SERVICES',
-  'CONTACT',
-  'PROCESS',
+  { label: 'ABOUT',    href: '/about'    },
+  { label: 'WORK',     href: '/work'     },
+  { label: 'SERVICES', href: '/services' },
+  { label: 'CONTACT',  href: '/contact'  },
+  { label: 'PROCESS',  href: '/process'  },
 ]
 
 const SERVICES = [
@@ -47,7 +47,15 @@ const SOCIALS = [
 const CARD_SIZE = 380
 
 export default function Footer() {
-  const [active, setActive] = useState(null)
+  const [active,   setActive]   = useState(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
   const mouseRef            = useRef({ x: 0, y: 0 })
   const cardRef             = useRef(null)
   const rafRef              = useRef(null)
@@ -170,9 +178,12 @@ export default function Footer() {
               </p>
               <ul className="flex flex-col gap-3">
                 {STUDIO_LINKS.map(l => (
-                  <li key={l}>
-                    <a href="#" className="text-[var(--color-fg)] text-[16px] hover:text-[var(--color-muted)] transition-colors">
-                      {l}
+                  <li key={l.label}>
+                    <a
+                      href={isMobile ? l.href : '#'}
+                      className="text-[var(--color-fg)] text-[16px] hover:text-[var(--color-muted)] transition-colors"
+                    >
+                      {l.label}
                     </a>
                   </li>
                 ))}
