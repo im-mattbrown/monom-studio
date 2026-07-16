@@ -6,14 +6,13 @@ import { useLenis } from 'lenis/react'
 const PROJECTS = [
   {
     num: '01',
-    title: "THAT'S ON ME",
-    subtitle: 'AI POWERED VIRTUAL TRY-ON APP',
-    url: "https://www.thatson.me/",
+    title: 'DEVIL BOYS BARBERSHOP',
+    subtitle: 'BRAND & WEB',
+    url: 'https://www.devilboysbarber.shop/',
     logo: '/images/logos/tom.png',
-    problem:
-      "Shopping for clothes online leaves out one of the main steps when shopping in person. A buyer has no idea how an item of clothing will look on themselves before they buy, leading to carts being left empty when a buyer can't see themselves in it.",
-    solution:
-      "A virtual try-on application that leverages the power of Google's latest image generation model Nano-Banana. Users of That's on Me can upload a photo of themselves and the clothing they want to buy to see a new image of them with the clothing on.",
+    videoSrc: 'https://matte-cdn.b-cdn.net/DBFinal.mp4',
+    problem: '',
+    solution: '',
   },
   {
     num: '02',
@@ -155,6 +154,8 @@ export default function ProjectsSection() {
   const rafRef        = useRef(null)
   const cardRefs      = useRef([])
 
+  const videoRefs = useRef([])
+
   const [isMobile, setIsMobile] = useState(false)
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
@@ -290,6 +291,45 @@ export default function ProjectsSection() {
   // Cancel RAF only on unmount
   useEffect(() => () => cancelAnimationFrame(rafRef.current), [])
 
+  // Lazy-load + play/pause video cards on intersection
+  useEffect(() => {
+    const observers = []
+    const sectionEl = sectionRef.current
+
+    // Kick off preload when section enters viewport (200px before)
+    if (sectionEl) {
+      const sectionObs = new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) return
+        PROJECTS.forEach((project, i) => {
+          if (!project.videoSrc) return
+          const v = videoRefs.current[i]
+          if (v && v.getAttribute('preload') === 'none') {
+            v.setAttribute('preload', 'auto')
+            v.load()
+          }
+        })
+        sectionObs.disconnect()
+      }, { rootMargin: '200px 0px' })
+      sectionObs.observe(sectionEl)
+      observers.push(sectionObs)
+    }
+
+    // Play when card is in view, pause when not
+    PROJECTS.forEach((project, i) => {
+      if (!project.videoSrc) return
+      const v = videoRefs.current[i]
+      if (!v) return
+      const obs = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) v.play().catch(() => {})
+        else v.pause()
+      }, { threshold: 0.1 })
+      obs.observe(v)
+      observers.push(obs)
+    })
+
+    return () => observers.forEach(o => o.disconnect())
+  }, [])
+
   // ── Mobile layout: vertical stack, cards scroll over sticky title ──────────
   if (isMobile) {
     return (
@@ -309,33 +349,74 @@ export default function ProjectsSection() {
 
           {/* Cards — z-10 so they cover the sticky title as they scroll up */}
           <div className="relative z-10 flex flex-col gap-4 px-[20px] pb-[60px]">
-            {PROJECTS.map((project) => (
-              <button
+            {PROJECTS.map((project, i) => {
+              const isVideo = !!project.videoSrc
+              const El      = isVideo ? 'div' : 'button'
+              return (
+              <El
                 key={project.num}
-                onClick={() => setActiveProject(project)}
-                className="w-full flex flex-col justify-between bg-[var(--color-card)] border border-[var(--color-card-border)] rounded-[10px] p-[24px] text-left"
-                style={{ minHeight: '260px' }}
+                {...(!isVideo && { onClick: () => setActiveProject(project) })}
+                className={`relative w-full flex flex-col justify-between bg-[var(--color-card)] border border-[var(--color-card-border)] rounded-[10px] text-left overflow-hidden${isVideo ? '' : ' p-[24px]'}`}
+                style={isVideo ? { aspectRatio: '16 / 9' } : { minHeight: '260px' }}
               >
-                <span className="text-[var(--color-muted)] text-[14px]">[ {project.num} ]</span>
-
-                {project.logo && (
-                  <div className="flex items-center justify-center flex-1 py-4">
-                    <img
-                      src={project.logo}
-                      alt={project.title}
-                      className="max-h-[80px] w-auto object-contain"
+                {isVideo ? (
+                  <>
+                    <video
+                      ref={el => { videoRefs.current[i] = el }}
+                      src={project.videoSrc}
+                      preload="none"
+                      muted
+                      loop
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
-                  </div>
-                )}
+                    <span className="absolute top-[24px] left-[24px] z-10 text-white/80 text-[14px]">[ {project.num} ]</span>
+                    {/* Title + visit site always visible on mobile */}
+                    <div className="absolute bottom-[20px] left-[24px] right-[24px] z-10 flex items-end justify-between gap-3">
+                      <p
+                        className="text-white font-medium leading-none"
+                        style={{ fontSize: 'clamp(20px, 5.5vw, 32px)' }}
+                      >
+                        {project.title}
+                      </p>
+                      {project.url && (
+                        <a
+                          href={project.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="shrink-0 flex items-center gap-1.5 border border-white rounded-[8px] px-3 py-[7px] text-white text-[12px] font-normal whitespace-nowrap"
+                        >
+                          VISIT SITE
+                          <img src="/images/arrowUpRight.svg" alt="" className="w-[8px] h-[8px] brightness-0 invert" />
+                        </a>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-[var(--color-muted)] text-[14px]">[ {project.num} ]</span>
 
-                <p
-                  className="text-[var(--color-fg)] font-medium leading-none"
-                  style={{ fontSize: 'clamp(24px, 7vw, 40px)' }}
-                >
-                  {project.title}
-                </p>
-              </button>
-            ))}
+                    {project.logo && (
+                      <div className="flex items-center justify-center flex-1 py-4">
+                        <img
+                          src={project.logo}
+                          alt={project.title}
+                          className="max-h-[80px] w-auto object-contain"
+                        />
+                      </div>
+                    )}
+
+                    <p
+                      className="text-[var(--color-fg)] font-medium leading-none"
+                      style={{ fontSize: 'clamp(24px, 7vw, 40px)' }}
+                    >
+                      {project.title}
+                    </p>
+                  </>
+                )}
+              </El>
+              )
+            })}
           </div>
 
         </section>
@@ -368,45 +449,104 @@ export default function ProjectsSection() {
 
         {/* Project cards */}
         {PROJECTS.map((project, i) => {
-          const isRight = i % 2 === 0
+          const isRight  = i % 2 === 0
+          const isVideo  = !!project.videoSrc
+          // Video cards use <div> so an <a> can nest inside without invalid HTML
+          const El       = isVideo ? 'div' : 'button'
+          const sharedCls = `absolute flex flex-col justify-between bg-[var(--color-card)] border border-[var(--color-card-border)] rounded-[10px] cursor-pointer hover:border-[var(--color-fg)]/40 transition-colors group overflow-hidden${isVideo ? '' : ' p-[32px]'}`
+          const sharedStyle = isVideo ? {
+            width:       'min(60vw, 80vh)',
+            aspectRatio: '16 / 9',
+            top:         'calc(50% - min(16.875vw, 22.5vh))',
+            ...(isRight ? { right: '5vw' } : { left: '5vw' }),
+            zIndex:      10,
+            transform:   'translateY(110vh)',
+            willChange:  'transform',
+          } : {
+            width:       'min(52vw, 78vh)',
+            height:      'min(52vw, 78vh)',
+            top:         'calc(50% - min(26vw, 39vh))',
+            ...(isRight ? { right: '5vw' } : { left: '5vw' }),
+            zIndex:      10,
+            transform:   'translateY(110vh)',
+            willChange:  'transform',
+          }
+
           return (
-            <button
+            <El
               key={project.num}
               ref={el => { cardRefs.current[i] = el }}
-              onClick={() => setActiveProject(project)}
-              className="absolute flex flex-col justify-between bg-[var(--color-card)] border border-[var(--color-card-border)] rounded-[10px] p-[32px] cursor-pointer hover:border-[var(--color-fg)]/40 transition-colors group"
-              style={{
-                width:      'min(52vw, 78vh)',
-                height:     'min(52vw, 78vh)',
-                top:        'calc(50% - min(26vw, 39vh))',
-                ...(isRight ? { right: '5vw' } : { left: '5vw' }),
-                zIndex:     10,
-                transform:  'translateY(110vh)',
-                willChange: 'transform',
-              }}
+              {...(!isVideo && { onClick: () => setActiveProject(project) })}
+              className={sharedCls}
+              style={sharedStyle}
             >
-              {/* Number — top left */}
-              <span className="text-[var(--color-muted)] text-[16px] text-left">[ {project.num} ]</span>
-
-              {/* Logo — centre */}
-              {project.logo && (
-                <div className="flex items-center justify-center flex-1">
-                  <img
-                    src={project.logo}
-                    alt={project.title}
-                    className="max-w-[45%] max-h-[45%] w-auto h-auto object-contain"
+              {isVideo ? (
+                <>
+                  {/* Video background */}
+                  <video
+                    ref={el => { videoRefs.current[i] = el }}
+                    src={project.videoSrc}
+                    preload="none"
+                    muted
+                    loop
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
-                </div>
-              )}
 
-              {/* Title — bottom left */}
-              <p
-                className="text-[var(--color-fg)] font-medium leading-none text-left group-hover:opacity-80 transition-opacity"
-                style={{ fontSize: 'clamp(28px, 3.5vw, 52px)' }}
-              >
-                {project.title}
-              </p>
-            </button>
+                  {/* Number — top left */}
+                  <span className="absolute top-[32px] left-[32px] z-10 text-white/80 text-[16px]">[ {project.num} ]</span>
+
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-5 bg-black/0 group-hover:bg-black/75 transition-colors duration-300">
+                    <p
+                      className="text-white font-medium leading-none text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 px-8"
+                      style={{ fontSize: 'clamp(28px, 3.5vw, 52px)' }}
+                    >
+                      {project.title}
+                    </p>
+                    {project.url && (
+                      <a
+                        href={project.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group/visit opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2 border border-white rounded-[10px] px-4 py-[9px] text-white text-[15px] font-normal hover:bg-white hover:text-black transition-colors"
+                      >
+                        VISIT SITE
+                        <img
+                          src="/images/arrowUpRight.svg"
+                          alt=""
+                          className="w-[9px] h-[9px] brightness-0 invert group-hover/visit:brightness-100 group-hover/visit:invert-0"
+                        />
+                      </a>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Number — top left */}
+                  <span className="text-[var(--color-muted)] text-[16px] text-left">[ {project.num} ]</span>
+
+                  {/* Logo — centre */}
+                  {project.logo && (
+                    <div className="flex items-center justify-center flex-1">
+                      <img
+                        src={project.logo}
+                        alt={project.title}
+                        className="max-w-[45%] max-h-[45%] w-auto h-auto object-contain"
+                      />
+                    </div>
+                  )}
+
+                  {/* Title — bottom left */}
+                  <p
+                    className="text-[var(--color-fg)] font-medium leading-none text-left group-hover:opacity-80 transition-opacity"
+                    style={{ fontSize: 'clamp(28px, 3.5vw, 52px)' }}
+                  >
+                    {project.title}
+                  </p>
+                </>
+              )}
+            </El>
           )
         })}
       </section>

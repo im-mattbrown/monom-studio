@@ -20,8 +20,10 @@ import HumansSection from './components/HumansSection';
 import ProjectsSection from './components/ProjectsSection';
 import DeviceScrollSection from './components/DeviceScrollSection';
 import ThemeToggle from './components/ThemeToggle';
-import MobileMenu from './components/MobileMenu';
+import NavMenu from './components/NavMenu';
 import Footer from './components/Footer';
+import StartProjectButton from './components/StartProjectButton';
+import StartProjectModal from './components/StartProjectModal';
 
 const imgLogo        = "/images/logos/monomLogoWhite.svg";
 const imgArrowUpRight = "/images/arrowUpRight.svg";
@@ -38,18 +40,17 @@ export default function Home() {
 
         {/* Desktop items — hidden on mobile */}
         <span className="hidden md:block"><ThemeToggle /></span>
-        <span className="hidden md:block text-[16px] font-normal tracking-wide">[ MENU ]</span>
-        <button className="hidden md:flex items-center gap-1 border border-[var(--color-fg)] rounded-[10px] py-[7.5px] px-3 text-[16px] font-normal hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors">
+
+        {/* Menu — all breakpoints, third position */}
+        <NavMenu />
+
+        {/* Start a project — desktop only, last */}
+        <StartProjectButton className="hidden md:flex items-center gap-1 border border-[var(--color-fg)] rounded-[10px] py-[7.5px] px-3 text-[16px] font-normal hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors">
           START A PROJECT
           <span className="inline-flex items-center justify-center p-[5px]">
             <img src={imgArrowUpRight} alt="" className="w-[9.5px] h-[9.5px] theme-invert" />
           </span>
-        </button>
-
-        {/* Mobile menu — hidden on desktop */}
-        <div className="md:hidden">
-          <MobileMenu />
-        </div>
+        </StartProjectButton>
       </nav>
 
       {/* ── HERO TEXT ── */}
@@ -90,7 +91,7 @@ export default function Home() {
       {/* ── VIDEO / IMAGE SECTION ── */}
       <section className="mx-[30px] mt-4 h-auto overflow-hidden relative">
         <video
-          src="https://res.cloudinary.com/dzghwkkzb/video/upload/v1774986218/monomVideoSection_1_nmb89n.mp4"
+          src="https://matte-cdn.b-cdn.net/MonomHero%20(1).mp4"
           autoPlay
           muted
           loop
@@ -163,18 +164,16 @@ export default function Home() {
           <p className="text-[var(--color-muted)] text-[23px] tracking-wide">
             m@monomstud.io
           </p>
-          <a
-            href="mailto:m@monomstud.io"
-            className="self-start flex items-center gap-2 border border-[var(--color-fg)] rounded-[10px] py-[10px] px-5 text-[16px] font-normal hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors"
-          >
+          <StartProjectButton className="self-start flex items-center gap-2 border border-[var(--color-fg)] rounded-[10px] py-[10px] px-5 text-[16px] font-normal hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors">
             START A PROJECT
             <img src="/images/arrowUpRight.svg" alt="" className="w-[10px] h-[10px] theme-invert" />
-          </a>
+          </StartProjectButton>
         </div>
       </section>
 
       <Footer />
 
+      <StartProjectModal />
     </main>
   );
 }

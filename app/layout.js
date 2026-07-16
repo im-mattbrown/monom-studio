@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import SmoothScroll from './components/SmoothScroll';
 import CustomCursor from './components/CustomCursor';
+import PageTransitionOverlay from './components/PageTransitionOverlay';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
       <body>
         <CustomCursor />
         <SmoothScroll>{children}</SmoothScroll>
+        <PageTransitionOverlay />
       </body>
     </html>
   );

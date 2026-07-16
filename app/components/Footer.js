@@ -39,9 +39,9 @@ const SERVICES = [
 ]
 
 const SOCIALS = [
-  { label: 'INSTAGRAM', icon: '/images/logos/instagram.svg', href: '#' },
+  { label: 'INSTAGRAM', icon: '/images/logos/instagram.svg', href: 'https://www.instagram.com/monomstud.io/', external: true },
   { label: 'BEHANCE',   icon: '/images/logos/behance.svg',   href: '#' },
-  { label: 'X',         icon: '/images/logos/x.svg',         href: '#' },
+  { label: 'X',         icon: '/images/logos/x.svg',         href: 'https://x.com/monomstudio', external: true },
 ]
 
 const CARD_SIZE = 380
@@ -133,8 +133,13 @@ export default function Footer() {
               className="h-[38px] w-auto self-start theme-invert"
             />
             <div className="flex flex-col gap-5 mt-12">
-              {SOCIALS.map(({ label, icon, href }) => (
-                <a key={label} href={href} className="flex items-center gap-3 group">
+              {SOCIALS.map(({ label, icon, href, external }) => (
+                <a
+                  key={label}
+                  href={href}
+                  {...(external && { target: '_blank', rel: 'noopener noreferrer' })}
+                  className="flex items-center gap-3 group"
+                >
                   <img
                     src={icon}
                     alt={label}
