@@ -10,31 +10,30 @@ const PROJECTS = [
     subtitle: 'BRAND & WEB',
     url: 'https://www.devilboysbarber.shop/',
     logo: '/images/logos/tom.png',
-    videoSrc: 'https://matte-cdn.b-cdn.net/DBFinal.mp4',
+    videoSrc: 'https://matte-cdn.b-cdn.net/dbRecording.mp4',
+    videoAspect: '1616 / 1080',
     problem: '',
     solution: '',
   },
   {
     num: '02',
-    title: 'SHRTCTS',
-    subtitle: 'POWER TO THE USER',
-    url: "https://www.shrtcts.io/",
-    logo: '/images/logos/shrtctsLogoMs.svg',
-    problem:
-      "Many modern software applications have keybindings that allow a user to increase their productivity and output. The issue is that many of these app shortcuts are hard to learn or often too boring to even start to master.",
-    solution:
-      "With shrtcts.io, users of Figma, Miro and VSCode can learn keybinding shortcuts through fun games and spaced repition where they progress through levels to become power users and speed up their workflows.",
+    title: 'RB BOARDS',
+    subtitle: '',
+    url: 'https://www.rbboards.co/',
+    videoSrc: 'https://matte-cdn.b-cdn.net/RbBoardsScreenRecord.mp4',
+    videoAspect: '1616 / 1080',
+    problem: '',
+    solution: '',
   },
   {
     num: '03',
-    title: 'CURL',
-    subtitle: 'SURF THE WEB AGAIN',
-    url: "https://www.curl.fyi/",
-    logo: '/images/logos/curlLogo.png',
-    problem:
-      "The web is a stale, boring shell of what it once was. Between scrolling social media and using AI tools, not much time is left for using the web as it was meant to be. We no longer discover new things, get inspired or have life changing experiences on the web unless its driven by social media.",
-    solution:
-      "Curl allows users to surf the web like we did in the early 2000s. Discovering new and interesting websites is one click of a button away on Curl where you can explore over 2000+ websites curated to your preferences across a wide range of topics and domains.",
+    title: 'SHRTCTS.IO',
+    url: 'https://www.shrtcts.io/',
+    logo: '/images/logos/shrtctsLogoMs.svg',
+    logoOverlay: true,
+    videoAspect: '1616 / 1080',
+    problem: '',
+    solution: '',
   },
 ]
 
@@ -195,7 +194,7 @@ export default function ProjectsSection() {
       const cardStart = i * SCROLL_PER_CARD
       const p         = clamp((progress - cardStart) / SCROLL_PER_CARD, 0, 1)
       const eased     = easeInOut(p)
-      card.style.transform = `translateY(${110 - 220 * eased}vh)`
+      card.style.transform = `translateY(calc(-50% + ${110 - 220 * eased}vh))`
     }
   }
 
@@ -350,31 +349,42 @@ export default function ProjectsSection() {
           {/* Cards — z-10 so they cover the sticky title as they scroll up */}
           <div className="relative z-10 flex flex-col gap-4 px-[20px] pb-[60px]">
             {PROJECTS.map((project, i) => {
-              const isVideo = !!project.videoSrc
-              const El      = isVideo ? 'div' : 'button'
+              const isVideo   = !!project.videoSrc
+              const isOverlay = isVideo || !!project.logoOverlay
+              const El        = isOverlay ? 'div' : 'button'
               return (
               <El
                 key={project.num}
-                {...(!isVideo && { onClick: () => setActiveProject(project) })}
-                className={`relative w-full flex flex-col justify-between bg-[var(--color-card)] border border-[var(--color-card-border)] rounded-[10px] text-left overflow-hidden${isVideo ? '' : ' p-[24px]'}`}
-                style={isVideo ? { aspectRatio: '16 / 9' } : { minHeight: '260px' }}
+                {...(!isOverlay && { onClick: () => setActiveProject(project) })}
+                className={`relative w-full flex flex-col justify-between bg-[var(--color-card)] border border-[var(--color-card-border)] rounded-[10px] text-left overflow-hidden${isOverlay ? '' : ' p-[24px]'}`}
+                style={isOverlay ? { aspectRatio: project.videoAspect } : { minHeight: '260px' }}
               >
-                {isVideo ? (
+                {isOverlay ? (
                   <>
-                    <video
-                      ref={el => { videoRefs.current[i] = el }}
-                      src={project.videoSrc}
-                      preload="none"
-                      muted
-                      loop
-                      playsInline
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                    <span className="absolute top-[24px] left-[24px] z-10 text-white/80 text-[14px]">[ {project.num} ]</span>
+                    {isVideo ? (
+                      <video
+                        ref={el => { videoRefs.current[i] = el }}
+                        src={project.videoSrc}
+                        preload="none"
+                        muted
+                        loop
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-card)]">
+                        <img
+                          src={project.logo}
+                          alt={project.title}
+                          className="max-w-[45%] max-h-[45%] w-auto h-auto object-contain"
+                        />
+                      </div>
+                    )}
+                    <span className={`absolute top-[24px] left-[24px] z-10 text-[14px]${isVideo ? ' text-white/80' : ' text-[var(--color-muted)]'}`}>[ {project.num} ]</span>
                     {/* Title + visit site always visible on mobile */}
                     <div className="absolute bottom-[20px] left-[24px] right-[24px] z-10 flex items-end justify-between gap-3">
                       <p
-                        className="text-white font-medium leading-none"
+                        className={`font-medium leading-none${isVideo ? ' text-white' : ' text-[var(--color-fg)]'}`}
                         style={{ fontSize: 'clamp(20px, 5.5vw, 32px)' }}
                       >
                         {project.title}
@@ -384,10 +394,10 @@ export default function ProjectsSection() {
                           href={project.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="shrink-0 flex items-center gap-1.5 border border-white rounded-[8px] px-3 py-[7px] text-white text-[12px] font-normal whitespace-nowrap"
+                          className={`shrink-0 flex items-center gap-1.5 border rounded-[8px] px-3 py-[7px] text-[12px] font-normal whitespace-nowrap${isVideo ? ' border-white text-white' : ' border-[var(--color-fg)] text-[var(--color-fg)]'}`}
                         >
                           VISIT SITE
-                          <img src="/images/arrowUpRight.svg" alt="" className="w-[8px] h-[8px] brightness-0 invert" />
+                          <img src="/images/arrowUpRight.svg" alt="" className={`w-[8px] h-[8px]${isVideo ? ' brightness-0 invert' : ''}`} />
                         </a>
                       )}
                     </div>
@@ -449,26 +459,29 @@ export default function ProjectsSection() {
 
         {/* Project cards */}
         {PROJECTS.map((project, i) => {
-          const isRight  = i % 2 === 0
-          const isVideo  = !!project.videoSrc
-          // Video cards use <div> so an <a> can nest inside without invalid HTML
-          const El       = isVideo ? 'div' : 'button'
-          const sharedCls = `absolute flex flex-col justify-between bg-[var(--color-card)] border border-[var(--color-card-border)] rounded-[10px] cursor-pointer hover:border-[var(--color-fg)]/40 transition-colors group overflow-hidden${isVideo ? '' : ' p-[32px]'}`
-          const sharedStyle = isVideo ? {
+          const isRight   = i % 2 === 0
+          const isVideo   = !!project.videoSrc
+          const isOverlay = isVideo || !!project.logoOverlay
+          // Overlay cards use <div> so an <a> can nest inside without invalid HTML
+          const El       = isOverlay ? 'div' : 'button'
+          const sharedCls = `absolute flex flex-col justify-between bg-[var(--color-card)] border border-[var(--color-card-border)] rounded-[10px] cursor-pointer hover:border-[var(--color-fg)]/40 transition-colors group overflow-hidden${isOverlay ? '' : ' p-[32px]'}`
+          // top:50% + a -50% in the transform centres the card regardless of its
+          // height, so overlay cards can take their own aspect ratio.
+          const sharedStyle = isOverlay ? {
             width:       'min(60vw, 80vh)',
-            aspectRatio: '16 / 9',
-            top:         'calc(50% - min(16.875vw, 22.5vh))',
+            aspectRatio: project.videoAspect,
+            top:         '50%',
             ...(isRight ? { right: '5vw' } : { left: '5vw' }),
             zIndex:      10,
-            transform:   'translateY(110vh)',
+            transform:   'translateY(calc(-50% + 110vh))',
             willChange:  'transform',
           } : {
             width:       'min(52vw, 78vh)',
             height:      'min(52vw, 78vh)',
-            top:         'calc(50% - min(26vw, 39vh))',
+            top:         '50%',
             ...(isRight ? { right: '5vw' } : { left: '5vw' }),
             zIndex:      10,
-            transform:   'translateY(110vh)',
+            transform:   'translateY(calc(-50% + 110vh))',
             willChange:  'transform',
           }
 
@@ -476,25 +489,35 @@ export default function ProjectsSection() {
             <El
               key={project.num}
               ref={el => { cardRefs.current[i] = el }}
-              {...(!isVideo && { onClick: () => setActiveProject(project) })}
+              {...(!isOverlay && { onClick: () => setActiveProject(project) })}
               className={sharedCls}
               style={sharedStyle}
             >
-              {isVideo ? (
+              {isOverlay ? (
                 <>
-                  {/* Video background */}
-                  <video
-                    ref={el => { videoRefs.current[i] = el }}
-                    src={project.videoSrc}
-                    preload="none"
-                    muted
-                    loop
-                    playsInline
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
+                  {/* Video background or logo placeholder */}
+                  {isVideo ? (
+                    <video
+                      ref={el => { videoRefs.current[i] = el }}
+                      src={project.videoSrc}
+                      preload="none"
+                      muted
+                      loop
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-[var(--color-card)]">
+                      <img
+                        src={project.logo}
+                        alt={project.title}
+                        className="max-w-[45%] max-h-[45%] w-auto h-auto object-contain"
+                      />
+                    </div>
+                  )}
 
                   {/* Number — top left */}
-                  <span className="absolute top-[32px] left-[32px] z-10 text-white/80 text-[16px]">[ {project.num} ]</span>
+                  <span className={`absolute top-[32px] left-[32px] z-10 text-[16px]${isVideo ? ' text-white/80' : ' text-[var(--color-muted)]'}`}>[ {project.num} ]</span>
 
                   {/* Hover overlay */}
                   <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-5 bg-black/0 group-hover:bg-black/75 transition-colors duration-300">

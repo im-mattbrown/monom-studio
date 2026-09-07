@@ -47,15 +47,7 @@ const SOCIALS = [
 const CARD_SIZE = 380
 
 export default function Footer() {
-  const [active,   setActive]   = useState(null)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768)
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [])
+  const [active, setActive] = useState(null)
   const mouseRef            = useRef({ x: 0, y: 0 })
   const cardRef             = useRef(null)
   const rafRef              = useRef(null)
@@ -180,7 +172,7 @@ export default function Footer() {
                 {STUDIO_LINKS.map(l => (
                   <li key={l.label}>
                     <a
-                      href={isMobile ? l.href : '#'}
+                      href={l.href}
                       className="text-[var(--color-fg)] text-[16px] hover:text-[var(--color-muted)] transition-colors"
                     >
                       {l.label}
@@ -198,15 +190,14 @@ export default function Footer() {
               <ul className="flex flex-col gap-3">
                 {SERVICES.map(service => (
                   <li key={service.num}>
-                    <a
-                      href="#"
-                      className="text-[var(--color-fg)] text-[16px] transition-colors"
+                    <span
+                      className="text-[var(--color-fg)] text-[16px] transition-colors cursor-default"
                       style={{ opacity: active && active.num !== service.num ? 0.35 : 1 }}
                       onMouseEnter={() => setActive(service)}
                       onMouseLeave={() => setActive(null)}
                     >
                       {service.title}
-                    </a>
+                    </span>
                   </li>
                 ))}
               </ul>

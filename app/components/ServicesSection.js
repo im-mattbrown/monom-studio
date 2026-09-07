@@ -2,32 +2,40 @@
 
 import { useRef, useState, useEffect } from 'react'
 import { useLenis } from 'lenis/react'
+import SpotlightText from './SpotlightText'
 
 const SERVICES = [
   {
     num: '01',
     title: 'WEB DESIGN',
-    desc: 'PIXEL-PERFECT INTERFACES BUILT AROUND YOUR USERS. WE DESIGN EXPERIENCES THAT FEEL INTUITIVE, LOOK CONSIDERED, AND LEAVE A LASTING IMPRESSION.',
+    desc: 'PIXEL-PERFECT INTERFACES BUILT AROUND YOUR USERS. WE DESIGN EXPERIENCES THAT FEEL INTUITIVE, LOOK CONSIDERED, AND LEAVE A LASTING IMPRESSION. ALL OUR DESIGNS ARE BUILT FROM ZERO WITHOUT USING GENERIC TEMPLATES.',
   },
   {
     num: '02',
     title: 'DEVELOPMENT',
-    desc: 'FAST, ACCESSIBLE, AND BUILT TO SCALE. WE WRITE CLEAN CODE THAT PERFORMS IN THE REAL WORLD ON EVERY DEVICE, IN EVERY CONDITION.',
+    desc: 'FAST, ACCESSIBLE, BUILT WITH INDUSTRY BEST STANDARDS WITHOUT CUTTING CORNERS. WE WRITE CLEAN CODE THAT PERFORMS IN THE REAL WORLD ON EVERY DEVICE, IN EVERY CONDITION AND WE DO THAT WITH A QUICK TURNAROUND.',
   },
+ 
   {
     num: '03',
-    title: 'BRANDING',
-    desc: 'IDENTITY SYSTEMS THAT GIVE YOUR BUSINESS A VOICE. FROM LOGO TO LANGUAGE, WE BUILD BRANDS THAT MEAN SOMETHING TO THE PEOPLE WHO MATTER.',
-  },
-  {
-    num: '04',
     title: 'SEO & GROWTH',
-    desc: 'VISIBILITY THAT COMPOUNDS OVER TIME. WE PAIR TECHNICAL SEO WITH CONTENT STRATEGY TO BRING THE RIGHT PEOPLE TO YOUR DOOR AND KEEP THEM THERE.',
+    desc: 'BE FOUND BY YOUR TARGET AUDIENCE. WE PAIR TECHNICAL SEO WITH CONTENT STRATEGY TO BRING THE RIGHT PEOPLE TO YOUR SITE AND KEEP THEM THERE. WE WILL DO WHAT WE CAN TO GET YOU IN THE RESULTS FROM AI SEARCH.',
+  },
+   {
+    num: '04',
+    title: 'BRANDING',
+    desc: 'WE WILL HELP YOU CRAFT IDENTITY SYSTEMS THAT GIVE YOUR BUSINESS A VOICE. FROM LOGO TO LANGUAGE, WE BRING A COHESIVE NARRATIVE TO YOUR UNIQUWE BUSINESS THAT YOUR AUDIENCE WILL RESONATE WITH.',
   },
   {
     num: '05',
     title: 'STRATEGY',
-    desc: 'CLARITY BEFORE EXECUTION. WE WORK WITH YOU TO UNDERSTAND YOUR GOALS, YOUR MARKET, AND YOUR USERS SO THAT EVERY DECISION WE MAKE IS INTENTIONAL.',
+    desc: 'FIND CLARITY BEFORE YOU BEGIN EXECUTION. WE WORK WITH YOU TO UNDERSTAND YOUR GOALS AND YOUR MARKET SO THAT EVERY DECISION WE MAKE IS INTENTIONAL. YOU WILL HAVE ACCESS TO US ANYTIME WITH EXTREME RESPONSIVENESS.',
+  },
+  {
+    num: '06',
+    title: 'PHOTOGRAPHY ||',
+    titleLine2: 'VIDEOGRAPHY',
+    desc: 'WE WORK WITH TALENTED INDIVIDUALS PROVIDE WHAT WE DO FOR THE WEB WITH ASSETS SUCH AS HIGH QUALITY IMAGERY AND VIDEOS FOR YOUR PROJECT. IF YOU NEED THIS KIND OF SERVICE WE CAN DISCUSS WHAT THESE VENDORS CHARGE.',
   },
 ]
 
@@ -201,11 +209,12 @@ export default function ServicesSection() {
                   className="text-[var(--color-fg)] font-medium leading-none"
                   style={{ fontSize: 'clamp(36px, 9vw, 56px)' }}
                 >
-                  {s.title}
+                  {s.titleLine2 ? <>{s.title}<br />{s.titleLine2}</> : s.title}
                 </p>
-                <p className="text-[var(--color-muted)] text-[16px] leading-[26px] mt-4">
-                  {s.desc}
-                </p>
+                <SpotlightText
+                  text={s.desc}
+                  className="text-[var(--color-muted)] text-[16px] leading-[26px] mt-4"
+                />
               </div>
             </div>
           ))}
@@ -242,11 +251,12 @@ export default function ServicesSection() {
                 className="text-[var(--color-fg)] font-medium leading-none"
                 style={{ fontSize: 'clamp(48px, 6vw, 90px)' }}
               >
-                {s.title}
+                {s.titleLine2 ? <>{s.title}<br />{s.titleLine2}</> : s.title}
               </p>
-              <p className="text-[var(--color-muted)] text-[18px] leading-[28px] mt-6 max-w-[480px]">
-                {s.desc}
-              </p>
+              <SpotlightText
+                text={s.desc}
+                className="text-[var(--color-muted)] text-[18px] leading-[28px] mt-6 max-w-[480px]"
+              />
             </div>
           </div>
         ))}

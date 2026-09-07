@@ -230,6 +230,20 @@ export default function NavMenu() {
           </button>
         )}
 
+        {/* Start a project — pinned top-right, same spot as the page nav's button */}
+        <button
+          onClick={() => {
+            handleClose()
+            window.dispatchEvent(new CustomEvent('open-project-modal'))
+          }}
+          className="hidden md:flex items-center gap-1 absolute top-[30px] right-[30px] border border-white rounded-[10px] py-[7.5px] px-3 text-white text-[16px] font-normal hover:bg-white hover:text-black transition-colors"
+        >
+          START A PROJECT
+          <span className="inline-flex items-center justify-center p-[5px]">
+            <img src="/images/arrowUpRight.svg" alt="" className="w-[9.5px] h-[9.5px] brightness-0 invert" />
+          </span>
+        </button>
+
         {/* Image cloud — full overlay, images positioned to the hovered row */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none hidden md:block">
           {hoveredLink !== null && hoveredRect && (
@@ -272,21 +286,11 @@ export default function NavMenu() {
           ))}
         </nav>
 
-        {/* Footer — theme + CTA */}
-        <div className="flex items-center justify-between px-[30px] pb-[30px] shrink-0 border-t border-white/10 pt-6">
+        {/* Footer — theme toggle */}
+        <div className="flex items-center px-[30px] pb-[30px] shrink-0 border-t border-white/10 pt-6">
           <span className="text-white [&_button]:text-white">
             <ThemeToggle />
           </span>
-          <button
-            onClick={() => {
-              handleClose()
-              window.dispatchEvent(new CustomEvent('open-project-modal'))
-            }}
-            className="flex items-center gap-2 border border-white rounded-[10px] py-[8px] px-4 text-white text-[14px] font-normal hover:bg-white hover:text-black transition-colors"
-          >
-            START A PROJECT
-            <img src="/images/arrowUpRight.svg" alt="" className="w-[9px] h-[9px] brightness-0 invert" />
-          </button>
         </div>
       </div>
     </>

@@ -3,12 +3,32 @@
 import { useRef, useEffect } from 'react'
 import { useLenis } from 'lenis/react'
 
-export default function WallRevealImage() {
-  const sectionRef = useRef(null)
-  const wrapperRef = useRef(null)   // scale transform
-  const imgRef     = useRef(null)   // clip-path
-  const clipRef    = useRef(null)   // { axis: 'y' | 'x', pct: number }
-  const readyRef   = useRef(false)
+export default function WallRevealImage({
+  videoSrc,
+  imageSrc = '/images/mattWall.jpg',
+  caption = (
+    <>
+      <p
+        className="text-white font-medium leading-none"
+        style={{ fontSize: 'clamp(52px, 8vw, 120px)' }}
+      >
+        Matt
+      </p>
+      <p
+        className="text-white font-medium leading-none mt-2"
+        style={{ fontSize: 'clamp(32px, 4.94vw, 74px)' }}
+      >
+        -Founder
+      </p>
+    </>
+  ),
+}) {
+  const isVideo     = !!videoSrc
+  const sectionRef  = useRef(null)
+  const wrapperRef  = useRef(null)   // scale transform
+  const imgRef      = useRef(null)   // clip-path
+  const clipRef     = useRef(null)   // { axis: 'y' | 'x', pct: number }
+  const readyRef    = useRef(false)
 
   function applyClip(pct) {
     const img = imgRef.current
@@ -16,15 +36,13 @@ export default function WallRevealImage() {
     if (!img || !c) return
     const v = Math.max(0, pct).toFixed(3)
     img.style.clipPath = c.axis === 'y'
-      ? `inset(${v}% 0 ${v}% 0)`   // crop top + bottom for portrait images
-      : `inset(0 ${v}% 0 ${v}%)`   // crop left + right for landscape images
+      ? `inset(${v}% 0 ${v}% 0)`   // crop top + bottom for portrait media
+      : `inset(0 ${v}% 0 ${v}%)`   // crop left + right for landscape media
   }
 
   // Compute the % to clip on each side so the visible crop is a square.
-  function applyRatio(img) {
-    if (!img.naturalWidth) return
-    const w = img.naturalWidth
-    const h = img.naturalHeight
+  function applyRatio(w, h) {
+    if (!w) return
     if (h >= w) {
       // portrait or square — clip top + bottom
       clipRef.current = { axis: 'y', pct: ((h - w) / (2 * h)) * 100 }
@@ -38,9 +56,14 @@ export default function WallRevealImage() {
 
   // Cached images don't fire onLoad — handle that here
   useEffect(() => {
-    const img = imgRef.current
-    if (img?.complete && img.naturalWidth > 0) applyRatio(img)
-  }, [])
+    const el = imgRef.current
+    if (!el) return
+    if (isVideo) {
+      if (el.readyState >= 1) applyRatio(el.videoWidth, el.videoHeight)
+    } else if (el.complete && el.naturalWidth > 0) {
+      applyRatio(el.naturalWidth, el.naturalHeight)
+    }
+  }, [isVideo])
 
   useLenis(() => {
     const section = sectionRef.current
@@ -68,29 +91,34 @@ export default function WallRevealImage() {
         className="relative w-full"
         style={{ transformOrigin: 'center top', willChange: 'transform', transform: 'scale(1.15)' }}
       >
-        <img
-          ref={imgRef}
-          src="/images/mattWall.jpg"
-          alt=""
-          onLoad={(e) => applyRatio(e.target)}
-          className="w-full block"
-          style={{ willChange: 'clip-path' }}
-        />
+        {isVideo ? (
+          <video
+            ref={imgRef}
+            src={videoSrc}
+            autoPlay
+            muted
+            loop
+            playsInline
+            onLoadedMetadata={(e) => applyRatio(e.target.videoWidth, e.target.videoHeight)}
+            className="w-full block"
+            style={{ willChange: 'clip-path' }}
+          />
+        ) : (
+          <img
+            ref={imgRef}
+            src={imageSrc}
+            alt=""
+            onLoad={(e) => applyRatio(e.target.naturalWidth, e.target.naturalHeight)}
+            className="w-full block"
+            style={{ willChange: 'clip-path' }}
+          />
+        )}
 
-        <div className="absolute bottom-[40px] left-[45px] z-10">
-          <p
-            className="text-white font-medium leading-none"
-            style={{ fontSize: 'clamp(52px, 8vw, 120px)' }}
-          >
-            Matt
-          </p>
-          <p
-            className="text-white font-medium leading-none mt-2"
-            style={{ fontSize: 'clamp(32px, 4.94vw, 74px)' }}
-          >
-            -Founder
-          </p>
-        </div>
+        {caption && (
+          <div className="absolute bottom-[40px] left-[45px] z-10">
+            {caption}
+          </div>
+        )}
       </div>
     </section>
   )
