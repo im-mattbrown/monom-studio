@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import SpotlightText from './SpotlightText'
 
 const PERSON_IMAGES = Array.from({ length: 16 }, (_, i) => `/images/person${i + 1}.png`)
 
@@ -128,7 +129,7 @@ export default function HumansSection() {
           </p>
         </div>
 
-        <p className="text-[15px] md:text-[23px] mt-8 md:mt-12 w-full md:w-[404px] text-[var(--color-muted)] leading-normal whitespace-pre-wrap">
+        <SpotlightText className="text-[15px] md:text-[23px] mt-8 md:mt-12 w-full md:w-[404px] text-[var(--color-muted)] leading-normal whitespace-pre-wrap">
           <CharsTwo text="OUR     DESIGN     DECISIONS      ARE " />
           <CharsTwo text="INFORMED  BY DATA   AND BACKED " />
           <CharsTwo text="BY   USER RESEARCH,   FOLLOWING " />
@@ -137,7 +138,7 @@ export default function HumansSection() {
           <CharsTwo text="USE   AI TOOLS  WHEN NECESSARY " />
           <CharsTwo text="TO    ENHANCE   OUR    WORKFLOW " />
           <CharsTwo text="NOT TO REPLACE    HUMAN TOUCH" />
-        </p>
+        </SpotlightText>
       </div>
 
       {/* ── RIGHT: random person spawn cloud — desktop only ── */}

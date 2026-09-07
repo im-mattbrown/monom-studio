@@ -4,7 +4,8 @@ import { useRef, useState } from 'react'
 
 // Brightens to white in a flashlight radius around the cursor, using a
 // background-clip:text radial gradient that tracks the mouse.
-export default function SpotlightText({ text, className }) {
+// Pass either `text` (plain string) or `children` (e.g. pre-split spans).
+export default function SpotlightText({ text, children, className }) {
   const ref = useRef(null)
   const [hover, setHover] = useState(false)
 
@@ -33,7 +34,7 @@ export default function SpotlightText({ text, className }) {
         WebkitTextFillColor:  'transparent',
       }}
     >
-      {text}
+      {children ?? text}
     </p>
   )
 }
