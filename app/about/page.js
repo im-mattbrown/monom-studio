@@ -10,6 +10,7 @@ import Footer from '../components/Footer'
 import EthosSection from '../components/EthosSection'
 import WallRevealImage from '../components/WallRevealImage'
 import AboutText from '../components/AboutText'
+import RainbowSpotlightText from '../components/RainbowSpotlightText'
 
 // ── Char splitter (same as index page) ───────────────────────────────────────
 function Chars({ text, className }) {
@@ -164,7 +165,7 @@ export default function AboutPage() {
             className="absolute theme-invert"
             style={{ bottom: '235px', left: '85px' }}
           />
-          <p className="text-[var(--color-muted)] text-[17px] mt-8">THE HUMAN AGENCY</p>
+          <RainbowSpotlightText text="THE HUMAN AGENCY" className="text-[var(--color-muted)] text-[17px] mt-8" />
         </div>
 
         {/* Soft gradient so people fade into the title area */}
@@ -200,6 +201,17 @@ export default function AboutPage() {
 
       {/* ── ABOUT TEXT — words reveal to white on scroll ── */}
       <AboutText />
+
+      {/* ── Contact line — email + start a project ── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-[30px] md:px-[45px] pb-[60px]">
+        <a href="mailto:m@monomstud.io" className="text-[var(--color-muted)] text-[18px] md:text-[23px] tracking-wide hover:text-[var(--color-fg)] transition-colors">
+          m@monomstud.io
+        </a>
+        <StartProjectButton className="self-start flex items-center gap-2 border border-[var(--color-fg)] rounded-[10px] py-[10px] px-5 text-[16px] font-normal hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors">
+          START A PROJECT
+          <img src="/images/arrowUpRight.svg" alt="" className="w-[10px] h-[10px] theme-invert" />
+        </StartProjectButton>
+      </div>
 
       <Footer />
       <StartProjectModal />

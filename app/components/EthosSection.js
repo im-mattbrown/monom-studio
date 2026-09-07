@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from 'react'
 import { useLenis } from 'lenis/react'
+import SpotlightText from './SpotlightText'
 
 const CARDS = [
   {
@@ -193,9 +194,10 @@ export default function EthosSection() {
                 >
                   {c.titleNode ?? c.title}
                 </p>
-                <p className="text-[var(--color-muted)] text-[16px] leading-[26px] mt-4">
-                  {c.desc}
-                </p>
+                <SpotlightText
+                  text={c.desc}
+                  className="text-[var(--color-muted)] text-[16px] leading-[26px] mt-4"
+                />
               </div>
             </div>
           ))}
@@ -234,9 +236,10 @@ export default function EthosSection() {
               >
                 {c.titleNode ?? c.title}
               </p>
-              <p className="text-[var(--color-muted)] text-[18px] leading-[28px] mt-6 max-w-[480px]">
-                {c.desc}
-              </p>
+              <SpotlightText
+                text={c.desc}
+                className="text-[var(--color-muted)] text-[18px] leading-[28px] mt-6 max-w-[480px]"
+              />
             </div>
           </div>
         ))}
