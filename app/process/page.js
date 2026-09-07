@@ -147,6 +147,32 @@ export default function ProcessPage() {
         </section>
       )}
 
+      {/* ── CONTACT SECTION ── */}
+      <section className="mt-[140px] px-[30px] md:px-[45px]">
+        <p className="text-[var(--color-muted)] text-[23px]">[ GET IN TOUCH ]</p>
+
+        <h2
+          className="font-medium text-[var(--color-fg)] leading-none mt-6"
+          style={{ fontSize: 'clamp(56px, 9.5vw, 136px)' }}
+        >
+          LET'S BUILD
+          <br />
+          SOMETHING
+          <br />
+          GREAT
+        </h2>
+
+        <div className="mt-14 flex flex-col md:flex-row md:items-center justify-between border-t border-[var(--color-card-border)] pt-8 gap-6 md:gap-0">
+          <a href="mailto:m@monomstud.io" className="text-[var(--color-muted)] text-[23px] tracking-wide hover:text-[var(--color-fg)] transition-colors">
+            m@monomstud.io
+          </a>
+          <StartProjectButton className="self-start flex items-center gap-2 border border-[var(--color-fg)] rounded-[10px] py-[10px] px-5 text-[16px] font-normal hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors">
+            START A PROJECT
+            <img src="/images/arrowUpRight.svg" alt="" className="w-[10px] h-[10px] theme-invert" />
+          </StartProjectButton>
+        </div>
+      </section>
+
       <Footer />
       <StartProjectModal />
     </main>

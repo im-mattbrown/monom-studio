@@ -162,9 +162,9 @@ export default function Home() {
         </h2>
 
         <div className="mt-14 flex flex-col md:flex-row md:items-center justify-between border-t border-[var(--color-card-border)] pt-8 gap-6 md:gap-0">
-          <p className="text-[var(--color-muted)] text-[23px] tracking-wide">
+          <a href="mailto:m@monomstud.io" className="text-[var(--color-muted)] text-[23px] tracking-wide hover:text-[var(--color-fg)] transition-colors">
             m@monomstud.io
-          </p>
+          </a>
           <StartProjectButton className="self-start flex items-center gap-2 border border-[var(--color-fg)] rounded-[10px] py-[10px] px-5 text-[16px] font-normal hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors">
             START A PROJECT
             <img src="/images/arrowUpRight.svg" alt="" className="w-[10px] h-[10px] theme-invert" />
