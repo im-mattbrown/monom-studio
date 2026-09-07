@@ -24,6 +24,7 @@ import NavMenu from './components/NavMenu';
 import Footer from './components/Footer';
 import StartProjectButton from './components/StartProjectButton';
 import StartProjectModal from './components/StartProjectModal';
+import RainbowSpotlightText from './components/RainbowSpotlightText';
 
 const imgLogo        = "/images/logos/monomLogoWhite.svg";
 const imgArrowUpRight = "/images/arrowUpRight.svg";
@@ -67,7 +68,7 @@ export default function Home() {
       </section>
 
       <div className="flex items-center justify-between px-[30px] mt-8 mb-[300px]">
-        <p className="text-[var(--color-muted)] text-[17px]">BUILT WITH VIBES</p>
+        <RainbowSpotlightText text="BUILT WITH VIBES" className="text-[var(--color-muted)] text-[17px]" />
       </div>
 
       {/* ── LARGE MONOM TEXT ── */}
