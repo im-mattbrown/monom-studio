@@ -9,11 +9,17 @@ export default function CookieConsent() {
   // null while we haven't checked localStorage yet — avoids flashing the
   // banner for returning visitors who already decided.
   const [consent, setConsent] = useState(null)
+  const [isLight, setIsLight] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved === 'accepted' || saved === 'declined') setConsent(saved)
     else setConsent('unset')
+
+    setIsLight(document.documentElement.classList.contains('light-theme'))
+    const onThemeChange = (e) => setIsLight(e.detail.light)
+    window.addEventListener('theme-change', onThemeChange)
+    return () => window.removeEventListener('theme-change', onThemeChange)
   }, [])
 
   function choose(value) {
@@ -37,12 +43,15 @@ export default function CookieConsent() {
         <div className="fixed bottom-0 left-0 right-0 z-[2000] px-[20px] pb-[20px] flex justify-center">
           <div className="w-full max-w-[720px] bg-[var(--color-card)] border border-[var(--color-card-border)] rounded-[14px] p-5 md:p-6 flex items-center gap-5 shadow-2xl">
             <video
-              src="https://matte-cdn.b-cdn.net/cookieMonstr.mp4"
+              key={isLight ? 'light' : 'dark'}
+              src={isLight
+                ? 'https://matte-cdn.b-cdn.net/cookieGrey.mp4'
+                : 'https://matte-cdn.b-cdn.net/cookieMonstr.mp4'}
               autoPlay
               muted
               loop
               playsInline
-              className="hidden md:block w-[128px] h-[128px] object-contain shrink-0"
+              className="block w-[80px] h-[80px] md:w-[128px] md:h-[128px] object-contain shrink-0"
             />
 
             <div className="flex flex-col md:flex-row md:items-center gap-4 flex-1 min-w-0">

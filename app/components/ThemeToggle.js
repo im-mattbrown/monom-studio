@@ -25,6 +25,7 @@ export default function ThemeToggle() {
     setIsLight(next)
     applyTheme(next)
     localStorage.setItem('theme', next ? 'light' : 'dark')
+    window.dispatchEvent(new CustomEvent('theme-change', { detail: { light: next } }))
   }
 
   return (
