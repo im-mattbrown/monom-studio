@@ -3,6 +3,7 @@ import './globals.css';
 import SmoothScroll from './components/SmoothScroll';
 import CustomCursor from './components/CustomCursor';
 import PageTransitionOverlay from './components/PageTransitionOverlay';
+import CookieConsent from './components/CookieConsent';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -22,6 +23,7 @@ export default function RootLayout({ children }) {
         <CustomCursor />
         <SmoothScroll>{children}</SmoothScroll>
         <PageTransitionOverlay />
+        <CookieConsent />
       </body>
     </html>
   );
