@@ -42,17 +42,29 @@ export default function CookieConsent() {
       {consent === 'unset' && (
         <div className="fixed bottom-0 left-0 right-0 z-[2000] px-[20px] pb-[20px] flex justify-center">
           <div className="w-full max-w-[720px] bg-[var(--color-card)] border border-[var(--color-card-border)] rounded-[14px] p-5 md:p-6 flex items-center gap-5 shadow-2xl">
-            <video
-              key={isLight ? 'light' : 'dark'}
-              src={isLight
-                ? 'https://matte-cdn.b-cdn.net/cookieGrey.mp4'
-                : 'https://matte-cdn.b-cdn.net/cookieMonstr.mp4'}
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="block w-[80px] h-[80px] md:w-[128px] md:h-[128px] object-contain shrink-0"
-            />
+            {/* Both clips stay mounted and playing in the background, always in
+                sync since they both started at the same moment — swapping is
+                just an opacity flip, so there's no load/decode stall on toggle. */}
+            <div className="relative w-[80px] h-[80px] md:w-[128px] md:h-[128px] shrink-0">
+              <video
+                src="https://matte-cdn.b-cdn.net/cookieDark.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 w-full h-full object-contain"
+                style={{ opacity: isLight ? 0 : 1 }}
+              />
+              <video
+                src="https://matte-cdn.b-cdn.net/cookieUpdate.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 w-full h-full object-contain"
+                style={{ opacity: isLight ? 1 : 0 }}
+              />
+            </div>
 
             <div className="flex flex-col md:flex-row md:items-center gap-4 flex-1 min-w-0">
               <p className="text-[var(--color-muted)] text-[14px] leading-[22px] flex-1">
